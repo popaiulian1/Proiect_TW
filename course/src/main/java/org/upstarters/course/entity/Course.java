@@ -31,6 +31,12 @@ public class Course {
         this.title = title;
         this.course_id = course_id;
     }
+
+    public Course(String title, String description, Integer capacity) {
+        this.title = title;
+        this.description = description;
+        this.capacity = capacity;
+    }
     //endregion
 
     //region Getters and Setters

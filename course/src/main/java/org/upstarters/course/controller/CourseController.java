@@ -58,9 +58,9 @@ public class CourseController {
         }
     }
     
-    @DeleteMapping("/deleteCourse/{courseId}")
-    public ResponseEntity<String> deleteCourse(@PathVariable Long courseId) {
-        Boolean isDeleted = courseService.deleteCourse(courseId);
+    @DeleteMapping("/deleteCourse/{title}")
+    public ResponseEntity<String> deleteCourse(@PathVariable String title) {
+        Boolean isDeleted = courseService.deleteCourse(title);
 
         if (isDeleted) {
             return ResponseEntity

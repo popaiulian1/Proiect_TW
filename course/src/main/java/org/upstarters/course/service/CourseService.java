@@ -1,5 +1,6 @@
 package org.upstarters.course.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.upstarters.course.dto.CourseDto;
@@ -8,6 +9,7 @@ import org.upstarters.course.mapper.CourseMapper;
 import org.upstarters.course.repository.CourseRepository;
 import org.upstarters.course.service.interfaces.ICourseService;
 
+import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,25 +46,32 @@ public class CourseService implements ICourseService {
     }
 
     @Override
+    @Transactional
     public Boolean updateCourse(CourseDto courseDto) {
-        Course course = CourseMapper.toEntity(courseDto);
+        Course existingCourse = courseRepository.findByTitle(courseDto.getTitle());
 
-        if(course.getCourseId() == null || !courseRepository.existsById(course.getCourseId())) {
-            System.out.println("Course with ID " + course.getCourseId() + " does not exist.");
+        if (existingCourse == null) {
+            System.out.println("Course with title " + courseDto.getTitle() + " does not exist.");
             return false;
         }
 
-        courseRepository.save(course);
+        existingCourse.setDepartment(courseDto.getDepartment());
+        existingCourse.setCapacity(courseDto.getCapacity());
+
+        courseRepository.save(existingCourse);
         return true;
     }
 
     @Override
-    public Boolean deleteCourse(Long courseId) {
-        if (courseId == null || !courseRepository.existsById(courseId)) {
-            System.out.println("Course with ID " + courseId + " does not exist.");
+    @Transactional
+    public Boolean deleteCourse(String title) {
+        Course existingCourse = courseRepository.findByTitle(title);
+        if (existingCourse == null) {
+            System.out.println("Course with title " + title + " does not exist.");
             return false;
         }
-        courseRepository.deleteById(courseId);
+
+        courseRepository.delete(existingCourse);
         return true;
     }
 }

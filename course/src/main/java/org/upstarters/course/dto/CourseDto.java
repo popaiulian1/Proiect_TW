@@ -4,16 +4,16 @@ public class CourseDto {
 
     //region Fields
     private String title;
-    private String description;
+    private String department;
     private Integer capacity;
     //endregion
 
     //region Constructors
     public CourseDto() {}
 
-    public CourseDto(String title, String description, Integer capacity) {
+    public CourseDto(String title, String department, Integer capacity) {
         this.title = title;
-        this.description = description;
+        this.department = department;
         this.capacity = capacity;
     }
     //endregion
@@ -28,12 +28,10 @@ public class CourseDto {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDepartment() { return department; }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     public Integer getCapacity() {

@@ -8,7 +8,7 @@ public class CourseMapper {
     public static CourseDto toDto(Course courseEntity) {
         return new CourseDto(
                 courseEntity.getTitle(),
-                courseEntity.getDescription(),
+                courseEntity.getDepartment(),
                 courseEntity.getCapacity()
         );
     }
@@ -16,7 +16,7 @@ public class CourseMapper {
     public static Course toEntity(CourseDto courseDto) {
         return new Course(
                 courseDto.getTitle(),
-                courseDto.getDescription(),
+                courseDto.getDepartment(),
                 courseDto.getCapacity()
         );
     }

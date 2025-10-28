@@ -3,20 +3,20 @@ package org.upstarters.course.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table (name = "Course")
+@Table (name = "courses")
 public class Course {
 
     //region Fields
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "course_id")
+    @Column (name = "id")
     private Long course_id;
 
     @Column (name = "title")
     private String title;
 
-    @Column (name = "description")
-    private String description;
+    @Column(name = "department")
+    private String department;
 
     @Column (name = "capacity")
     private Integer capacity;
@@ -25,18 +25,19 @@ public class Course {
     //region Constructors
     public Course() {}
 
-    public Course(Integer capacity, String description, String title, Long course_id) {
-        this.capacity = capacity;
-        this.description = description;
+    public Course(String title, String department, Integer capacity) {
         this.title = title;
-        this.course_id = course_id;
+        this.department = department;
+        this.capacity = capacity;
     }
 
-    public Course(String title, String description, Integer capacity) {
+    public Course(Long course_id, String title, String department, Integer capacity) {
+        this.course_id = course_id;
         this.title = title;
-        this.description = description;
+        this.department = department;
         this.capacity = capacity;
     }
+
     //endregion
 
     //region Getters and Setters
@@ -57,13 +58,9 @@ public class Course {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDepartment() { return department; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDepartment(String department) { this.department = department; }
 
     public Integer getCapacity() {
         return capacity;
@@ -75,3 +72,6 @@ public class Course {
 
     //endregion
 }
+
+
+

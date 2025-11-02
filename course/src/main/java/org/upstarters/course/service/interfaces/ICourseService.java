@@ -12,4 +12,5 @@ public interface ICourseService {
     Boolean updateCourse(CourseDto courseDto);
     Boolean deleteCourse(String Title);
     List<CourseDto> getCoursesByDepartment(String department);
+    Boolean updateCapacityOfCourse(Integer capacity, String title);
 }

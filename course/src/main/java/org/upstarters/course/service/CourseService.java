@@ -89,4 +89,25 @@ public class CourseService implements ICourseService {
                 .map(CourseMapper::toDto)
                 .toList();
     }
+
+    @Override
+    @Transactional
+    public Boolean updateCapacityOfCourse(Integer capacity, String title) {
+        Course existingCourse = courseRepository.findByTitle(title);
+
+        if (existingCourse == null) {
+            System.out.println("Course with title " + title + " does not exist.");
+            return false;
+        }
+
+        if(capacity < 0){
+            System.out.println("Capacity of course with title " + title + " must be positive.");
+            return false;
+        }
+
+        existingCourse.setCapacity(capacity);
+
+        courseRepository.save(existingCourse);
+        return true;
+    }
 }

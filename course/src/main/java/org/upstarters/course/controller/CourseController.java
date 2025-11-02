@@ -73,6 +73,21 @@ public class CourseController {
         }
     }
 
+    @PatchMapping("/updateCapacity/{tile}")
+    public ResponseEntity<String> updateCapacity(@PathVariable String tile, @RequestParam Integer capacity) {
+        Boolean isUpdated = courseService.updateCapacityOfCourse(capacity, tile);
+
+        if (isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("Course updated successfully.");
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Course not found.");
+        }
+    }
+
     //endregion
 
     //region Delete Endpoints

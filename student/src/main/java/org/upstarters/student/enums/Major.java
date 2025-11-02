@@ -1,0 +1,14 @@
+package org.upstarters.student.enums;
+
+public enum Major {
+    COMPUTER_SCIENCE,
+    BUSINESS_ADMINISTRATION,
+    MECHANICAL_ENGINEERING,
+    PSYCHOLOGY,
+    BIOLOGY,
+    ACCOUNTING,
+    NURSING,
+    POLITICAL_SCIENCE,
+    MATHEMATICS,
+    ENGLISH
+}

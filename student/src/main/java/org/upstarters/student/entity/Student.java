@@ -1,6 +1,7 @@
 package org.upstarters.student.entity;
 
 import jakarta.persistence.*;
+import org.upstarters.student.enums.Major;
 
 @Entity
 @Table(name = "students")
@@ -12,21 +13,20 @@ public class Student {
     private Long id;
 
     @Column(name = "firstname")
-    private String firstname;
+    private String firstName;
 
     @Column(name = "lastname")
-    private String lastname;
+    private String lastName;
 
     @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "major")
-    private String major;
+    private Major major;
 
-    public Student(Long id, String firstname, String lastname, String email, String major) {
-        this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public Student(String firstname, String lastname, String email, Major major) {
+        this.firstName = firstname;
+        this.lastName = lastname;
         this.email = email;
         this.major = major;
     }
@@ -43,19 +43,19 @@ public class Student {
     }
 
     public String getFirstname() {
-        return firstname;
+        return firstName;
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        this.firstName = firstname;
     }
 
     public String getLastname() {
-        return lastname;
+        return lastName;
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
+        this.lastName = lastname;
     }
 
     public String getEmail() {
@@ -66,11 +66,11 @@ public class Student {
         this.email = email;
     }
 
-    public String getMajor() {
+    public Major getMajor() {
         return major;
     }
 
-    public void setMajor(String major) {
+    public void setMajor(Major major) {
         this.major = major;
     }
 }

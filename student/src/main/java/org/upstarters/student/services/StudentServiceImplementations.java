@@ -24,4 +24,33 @@ public class StudentServiceImplementations implements IStudentService {
         return StudentMapper.toDTO(student);
     }
 
+    @Override
+    public StudentDTO fetchStudent(String email) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student with this email does not exist!"));
+        return StudentMapper.toDTO(student);
+    }
+
+    @Override
+    public StudentDTO updateStudent(String email, StudentDTO studentDTO) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student with this email does not exist!"));
+
+        student.setFirstname(studentDTO.getFirstName());
+        student.setLastname(studentDTO.getLastName());
+        student.setEmail(studentDTO.getEmail());
+        student.setMajor(studentDTO.getMajor());
+
+        studentRepository.save(student);
+        return StudentMapper.toDTO(student);
+    }
+
+    @Override
+    public boolean deleteStudent(String email) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student with this email does not exist!"));
+
+        studentRepository.delete(student);
+        return true;
+    }
 }

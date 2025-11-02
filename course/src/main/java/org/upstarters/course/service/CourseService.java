@@ -110,4 +110,17 @@ public class CourseService implements ICourseService {
         courseRepository.save(existingCourse);
         return true;
     }
+
+    @Override
+    public List<CourseDto> getCoursesAvailable() {
+        List<Course> availableCourses = courseRepository.findCourseAvailable();
+
+        if(availableCourses.isEmpty()) {
+            throw new RuntimeException("There are now available courses.");
+        }
+
+        return availableCourses.stream()
+                .map(CourseMapper::toDto)
+                .toList();
+    }
 }

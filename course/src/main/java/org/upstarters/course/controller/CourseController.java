@@ -55,6 +55,15 @@ public class CourseController {
                 .body(courseDtos);
     }
 
+    @GetMapping("getAllAvailableCourses")
+    public ResponseEntity<Iterable<CourseDto>> getAllAvailableCourses() {
+        Iterable<CourseDto> availableCoursesDtos = courseService.getCoursesAvailable();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(availableCoursesDtos);
+    }
+
     //endregion
 
     //region Update Endpoints

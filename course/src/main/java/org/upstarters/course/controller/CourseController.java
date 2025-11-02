@@ -18,6 +18,7 @@ public class CourseController {
         this.courseService = courseService;
     }
 
+    //region Post Endpoints
     @PostMapping("/addCourse")
     public ResponseEntity<CourseDto> addCourse(@RequestBody CourseDto courseDto) {
         CourseDto addCourseDto = courseService.addCourse(courseDto);
@@ -26,7 +27,9 @@ public class CourseController {
                 .status(HttpStatus.CREATED)
                 .body(addCourseDto);
     }
+    //endregion
 
+    //region Get Endpoints
     @GetMapping("/getAllCourses")
     public ResponseEntity<Iterable<CourseDto>> getAllCourses() {
         Iterable<CourseDto> courseDtos = courseService.getAllCourses();
@@ -43,6 +46,18 @@ public class CourseController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/getCoursesByDepartment/{department}")
+    public ResponseEntity<Iterable<CourseDto>> getCoursesByDepartment(@PathVariable String department) {
+        Iterable<CourseDto> courseDtos = courseService.getCoursesByDepartment(department);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(courseDtos);
+    }
+
+    //endregion
+
+    //region Update Endpoints
     @PutMapping("/updateCourse")
     public ResponseEntity<String> updateCourse(@RequestBody CourseDto courseDto) {
         Boolean isUpdated = courseService.updateCourse(courseDto);
@@ -57,7 +72,10 @@ public class CourseController {
                     .body("Course not found.");
         }
     }
-    
+
+    //endregion
+
+    //region Delete Endpoints
     @DeleteMapping("/deleteCourse/{title}")
     public ResponseEntity<String> deleteCourse(@PathVariable String title) {
         Boolean isDeleted = courseService.deleteCourse(title);
@@ -72,5 +90,8 @@ public class CourseController {
                     .body("Course not found.");
         }
     }
+    //endregion
+
+
 
 }

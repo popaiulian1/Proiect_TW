@@ -10,6 +10,7 @@ import org.upstarters.course.repository.CourseRepository;
 import org.upstarters.course.service.interfaces.ICourseService;
 
 import java.beans.Transient;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,5 +74,19 @@ public class CourseService implements ICourseService {
 
         courseRepository.delete(existingCourse);
         return true;
+    }
+
+    @Override
+    @Transactional
+    public List<CourseDto> getCoursesByDepartment(String department) {
+        List<Course> departmentCourses = courseRepository.findCourseByDepartment(department);
+
+        if(departmentCourses.isEmpty()) {
+            throw new RuntimeException("Course with department " + department + " does not exist.");
+        }
+
+        return departmentCourses.stream()
+                .map(CourseMapper::toDto)
+                .toList();
     }
 }

@@ -11,4 +11,5 @@ public interface ICourseService {
     Optional<CourseDto> getCourseById(Long id);
     Boolean updateCourse(CourseDto courseDto);
     Boolean deleteCourse(String Title);
+    List<CourseDto> getCoursesByDepartment(String department);
 }

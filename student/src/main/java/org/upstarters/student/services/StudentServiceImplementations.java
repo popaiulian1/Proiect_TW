@@ -4,8 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.upstarters.student.dtos.StudentDTO;
 import org.upstarters.student.entity.Student;
+import org.upstarters.student.enums.Major;
 import org.upstarters.student.mapper.StudentMapper;
 import org.upstarters.student.repository.StudentRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImplementations implements IStudentService {
@@ -29,6 +33,31 @@ public class StudentServiceImplementations implements IStudentService {
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Student with this email does not exist!"));
         return StudentMapper.toDTO(student);
+    }
+
+    @Override
+    public Long countStudents() {
+        return studentRepository.count();
+    }
+
+//    @Override
+//    public List<StudentDTO> fetchStudentsByMajor(String major) {
+//        List<Student> student = studentRepository.findAllByMajor(major);
+//
+//        return student
+//                .stream()
+//                .map(StudentMapper::toDTO)
+//                .toList();
+//    }
+
+    @Override
+    public List<StudentDTO> fetchStudents() {
+        List<Student> students = studentRepository.findAll();
+
+        return students
+                .stream()
+                .map(StudentMapper::toDTO)
+                .toList();
     }
 
     @Override

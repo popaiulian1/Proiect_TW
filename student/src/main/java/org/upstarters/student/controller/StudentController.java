@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.upstarters.student.dtos.StudentDTO;
+import org.upstarters.student.enums.Major;
 import org.upstarters.student.services.IStudentService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/student")
@@ -26,6 +29,24 @@ public class StudentController {
         StudentDTO fetchedStudent = studentService.fetchStudent(email);
         return new ResponseEntity<>(fetchedStudent, HttpStatus.FOUND);
     }
+
+    @GetMapping("/getStudents")
+    public ResponseEntity<List<StudentDTO>> fetchStudent() {
+        List<StudentDTO> fetchedStudents = studentService.fetchStudents();
+        return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/countStudents")
+    public ResponseEntity<Long> countStudents() {
+        Long numberOfStudents = studentService.countStudents();
+        return new ResponseEntity<>(numberOfStudents, HttpStatus.FOUND);
+    }
+
+//    @GetMapping("/getStudentsByMajor/{major}")
+//    public ResponseEntity<List<StudentDTO>> fetchStudentByMajor(@Valid @PathVariable String major) {
+//        List<StudentDTO> fetchedStudents = studentService.fetchStudentsByMajor(major);
+//        return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
+//    }
 
     @PutMapping("/update/{email}")
     public ResponseEntity<StudentDTO> updateStudent(@Valid @PathVariable String email, @Valid @RequestBody StudentDTO studentDTO) {

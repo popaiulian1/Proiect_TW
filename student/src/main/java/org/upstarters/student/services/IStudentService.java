@@ -9,7 +9,7 @@ public interface IStudentService {
     StudentDTO addStudent(StudentDTO studentDTO);
     StudentDTO fetchStudent(String email);
     Long countStudents();
-    //List<StudentDTO> fetchStudentsByMajor(String major);
+    List<StudentDTO> fetchStudentsByMajor(String major);
     List<StudentDTO> fetchStudents();
     StudentDTO updateStudent(String email, StudentDTO studentDTO);
     boolean deleteStudent(String email);

@@ -40,15 +40,15 @@ public class StudentServiceImplementations implements IStudentService {
         return studentRepository.count();
     }
 
-//    @Override
-//    public List<StudentDTO> fetchStudentsByMajor(String major) {
-//        List<Student> student = studentRepository.findAllByMajor(major);
-//
-//        return student
-//                .stream()
-//                .map(StudentMapper::toDTO)
-//                .toList();
-//    }
+    @Override
+    public List<StudentDTO> fetchStudentsByMajor(String major) {
+        List<Student> student = studentRepository.findAllByMajor(major);
+
+        return student
+                .stream()
+                .map(StudentMapper::toDTO)
+                .toList();
+    }
 
     @Override
     public List<StudentDTO> fetchStudents() {

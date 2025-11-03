@@ -42,11 +42,11 @@ public class StudentController {
         return new ResponseEntity<>(numberOfStudents, HttpStatus.FOUND);
     }
 
-//    @GetMapping("/getStudentsByMajor/{major}")
-//    public ResponseEntity<List<StudentDTO>> fetchStudentByMajor(@Valid @PathVariable String major) {
-//        List<StudentDTO> fetchedStudents = studentService.fetchStudentsByMajor(major);
-//        return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
-//    }
+    @GetMapping("/getStudentsByMajor/{major}")
+    public ResponseEntity<List<StudentDTO>> fetchStudentByMajor(@Valid @PathVariable String major) {
+        List<StudentDTO> fetchedStudents = studentService.fetchStudentsByMajor(major);
+        return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
+    }
 
     @PutMapping("/update/{email}")
     public ResponseEntity<StudentDTO> updateStudent(@Valid @PathVariable String email, @Valid @RequestBody StudentDTO studentDTO) {

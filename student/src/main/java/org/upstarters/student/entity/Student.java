@@ -22,9 +22,10 @@ public class Student {
     private String email;
 
     @Column(name = "major")
-    private Major major;
+    //private Major major;
+    private String major;
 
-    public Student(String firstname, String lastname, String email, Major major) {
+    public Student(String firstname, String lastname, String email, String major) {
         this.firstName = firstname;
         this.lastName = lastname;
         this.email = email;
@@ -66,11 +67,11 @@ public class Student {
         this.email = email;
     }
 
-    public Major getMajor() {
+    public String getMajor() {
         return major;
     }
 
-    public void setMajor(Major major) {
+    public void setMajor(String major) {
         this.major = major;
     }
 }

@@ -6,9 +6,10 @@ public class StudentDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private Major major;
+    //private Major major;
+    private String major;
 
-    public StudentDTO(String firstName, String lastName, String email, Major major) {
+    public StudentDTO(String firstName, String lastName, String email, String major) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -42,11 +43,11 @@ public class StudentDTO {
         this.email = email;
     }
 
-    public Major getMajor() {
+    public String getMajor() {
         return major;
     }
 
-    public void setMajor(Major major) {
+    public void setMajor(String major) {
         this.major = major;
     }
 }

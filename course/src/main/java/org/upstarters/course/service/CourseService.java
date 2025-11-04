@@ -123,4 +123,13 @@ public class CourseService implements ICourseService {
                 .map(CourseMapper::toDto)
                 .toList();
     }
+
+    @Override
+    public List<CourseDto> getCoursesSortedByCapacity() {
+        List<Course> courses = courseRepository.findAllByOrderByCapacityAsc();
+
+        return courses.stream()
+                .map(CourseMapper::toDto)
+                .toList();
+    }
 }

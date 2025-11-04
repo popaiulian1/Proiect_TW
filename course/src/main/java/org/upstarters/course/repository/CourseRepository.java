@@ -16,5 +16,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query ("select c from Course c where c.capacity > 0")
     List<Course> findCourseAvailable();
 
-
+    List<Course> findAllByOrderByCapacityAsc();
 }

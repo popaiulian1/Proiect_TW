@@ -2,16 +2,22 @@ package org.upstarters.enrollment.service.student;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 public class StudentAPIService implements IStudentAPIService {
 
     @Override
     public Long getStudentIdByName(String studentName) {
-        return Long.valueOf("1");
+        return switch (studentName) {
+            case "Jane Doe" -> Long.valueOf("2");
+            case "John Doe" -> Long.valueOf("1");
+            default -> Long.valueOf("1");
+        };
     }
 
     @Override
     public String getStudentNameById(Long studentId) {
-        return "temporary_student";
+        return "placeholder_student";
     }
 }

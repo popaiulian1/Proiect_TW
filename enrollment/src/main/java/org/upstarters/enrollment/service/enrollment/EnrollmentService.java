@@ -11,9 +11,10 @@ import org.upstarters.enrollment.service.student.StudentAPIService;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentService implements IEnrollmentService {
@@ -97,5 +98,56 @@ public class EnrollmentService implements IEnrollmentService {
         } else {
             throw new EntityNotFoundException("Enrollment not found with id: " + enrollmentId);
         }
+    }
+
+    @Override
+    public List<EnrollmentDTO> studentsFilteredByCourse(String course) {
+//        System.out.println("Looking for course: '" + course + "'");
+        Long courseId = courseAPIService.getCourseIdByName(course);
+//        System.out.println("Found courseId: " + courseId);
+
+        if (courseId == null){
+            throw new EntityNotFoundException("Course not found with name: " + course);
+        }
+
+        List<Enrollment> enrollments = enrollmentRepository.findAllByCourseId(courseId)
+                .orElse(List.of());
+//        System.out.println("Found enrollments: " + enrollments.size());
+
+//        for ( Enrollment enrollment : enrollments ) {
+//            System.out.println("Found enrollment: " + " " + enrollment.getId() + " " + enrollment.getStudentId() + " " + enrollment.getCourseId());
+//        }
+
+        return enrollments.stream()
+                .map(enrollmentMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EnrollmentDTO> failingStudents() {
+        List<Enrollment> enrollments = enrollmentRepository.findAllByGradeLessThanEqual(5.0)
+                .orElse(List.of());
+
+        return enrollments.stream()
+                .map(enrollmentMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EnrollmentDTO> getTop5InCourse(String course) {
+
+        Long courseId = courseAPIService.getCourseIdByName(course);
+
+        if (courseId == null) {
+            throw new EntityNotFoundException("Course not found with name: " + course);
+        }
+
+        List<Enrollment> enrollments = enrollmentRepository.findAllByCourseId(courseId).orElse(List.of());
+
+        return enrollments.stream().map(enrollmentMapper::toDto)
+                .sorted(Comparator.comparing(EnrollmentDTO::getEnrollmentDate).reversed())
+                .limit(5)
+                .collect(Collectors.toList());
+
     }
 }

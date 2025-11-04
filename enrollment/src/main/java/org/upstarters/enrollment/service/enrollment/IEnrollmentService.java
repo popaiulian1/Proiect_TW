@@ -12,4 +12,7 @@ public interface IEnrollmentService {
     EnrollmentDTO getEnrollment(Long enrollmentId);
     void updateEnrollment(Long enrollmentId, EnrollmentUpdateDTO enrollmentUpdateDTO);
     void deleteEnrollment(Long enrollmentId);
+    List<EnrollmentDTO> studentsFilteredByCourse(String course);
+    List<EnrollmentDTO> failingStudents();
+    List<EnrollmentDTO> getTop5InCourse(String course);
 }

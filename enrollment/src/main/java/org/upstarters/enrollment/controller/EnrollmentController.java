@@ -11,6 +11,7 @@ import org.upstarters.enrollment.entity.Enrollment;
 import org.upstarters.enrollment.mapper.EnrollmentMapper;
 import org.upstarters.enrollment.service.enrollment.EnrollmentService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,22 +94,44 @@ public class EnrollmentController {
 
     // =====> Additional endpoints <=====
 
-    @GetMapping("/students/{course}/")
-    public ResponseEntity<String> getStudentsByCourse(@Valid @PathVariable String course) {
-        // Placeholder for fetching students by course logic
-        return ResponseEntity.ok("List of students enrolled in the specified course");
+    @GetMapping("/students/{course}")
+    public ResponseEntity<List<EnrollmentDTO>> getStudentsByCourse(@Valid @PathVariable String course) {
+
+        List<EnrollmentDTO> enrollments =  new ArrayList<EnrollmentDTO>();
+
+        try{
+            enrollments = enrollmentService.studentsFilteredByCourse(course);
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(enrollments);
     }
 
-    @GetMapping("/students/failed/")
-    public ResponseEntity<String> getStudentsWithFailingGrades() {
-        // Placeholder for fetching students with failing grades logic
-        return ResponseEntity.ok("List of students with failing grades");
+    @GetMapping("/students/failed")
+    public ResponseEntity<List<EnrollmentDTO>> getStudentsWithFailingGrades() {
+
+        List<EnrollmentDTO> enrollments = new ArrayList<EnrollmentDTO>();
+
+        try {
+            enrollments = enrollmentService.failingStudents();
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(enrollments);
     }
 
     @GetMapping("/course/{course}/top5")
-    public ResponseEntity<String> getTop5StudentsInCourse(@Valid @PathVariable String course) {
-        // Placeholder for fetching top 5 students in a course logic
-        return ResponseEntity.ok("Top 5 students in the specified course");
+    public ResponseEntity<List<EnrollmentDTO>> getTop5StudentsInCourse(@Valid @PathVariable String course) {
+
+        List<EnrollmentDTO> enrollments = new ArrayList<EnrollmentDTO>();
+
+        try {
+            enrollments = enrollmentService.getTop5InCourse(course);
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(enrollments);
     }
 
 }

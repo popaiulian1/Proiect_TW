@@ -12,4 +12,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     Optional<List<Enrollment>> findEnrollmentsByCourseId(Long courseId);
     Optional<List<Enrollment>> findEnrollmentsByGradeLessThanEqual(double grade);
     boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
+    boolean existsByCourseId(Long courseId);
+    boolean existsByStudentId(Long studentId);
+    Optional<List<Enrollment>> findAllByCourseId(Long courseId);
+    Optional<List<Enrollment>> findAllByGradeLessThanEqual(double grade);
 }

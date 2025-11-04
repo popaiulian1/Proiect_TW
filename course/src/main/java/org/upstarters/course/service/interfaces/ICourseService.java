@@ -14,4 +14,5 @@ public interface ICourseService {
     List<CourseDto> getCoursesByDepartment(String department);
     Boolean updateCapacityOfCourse(Integer capacity, String title);
     List<CourseDto> getCoursesAvailable();
+    List<CourseDto> getCoursesSortedByCapacity();
 }

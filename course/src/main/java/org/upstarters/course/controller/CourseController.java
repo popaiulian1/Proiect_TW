@@ -64,6 +64,15 @@ public class CourseController {
                 .body(availableCoursesDtos);
     }
 
+    @GetMapping("/getCoursesSortedByCapacity")
+    public ResponseEntity<Iterable<CourseDto>> getCoursesSortedByCapacity() {
+        Iterable<CourseDto> courseDtos = courseService.getCoursesSortedByCapacity();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(courseDtos);
+    }
+
     //endregion
 
     //region Update Endpoints

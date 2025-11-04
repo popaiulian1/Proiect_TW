@@ -145,7 +145,7 @@ public class EnrollmentService implements IEnrollmentService {
         List<Enrollment> enrollments = enrollmentRepository.findAllByCourseId(courseId).orElse(List.of());
 
         return enrollments.stream().map(enrollmentMapper::toDto)
-                .sorted(Comparator.comparing(EnrollmentDTO::getEnrollmentDate).reversed())
+                .sorted(Comparator.comparing(EnrollmentDTO::getGrade).reversed())
                 .limit(5)
                 .collect(Collectors.toList());
 

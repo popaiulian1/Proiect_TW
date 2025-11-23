@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="05e6246c-58c1-4960-bcbe-ddc43c880b8a" name="Changes" comment="" />
+    <list default="true" id="05e6246c-58c1-4960-bcbe-ddc43c880b8a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/src/main/java/org/upstarters/course/entity/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/course/src/main/java/org/upstarters/course/entity/Course.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/src/main/java/org/upstarters/course/service/interfaces/ICourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course/src/main/java/org/upstarters/course/service/interfaces/ICourseService.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,10 +14,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="34gNRZRmSQJryzjJvyR8byDPFeG" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -22,9 +26,9 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "course-branch",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Anul 3/TW/Proiect_TW/course",
+    "last_opened_file_path": "D:/Anul 3/TW/Lab7/Laborator 7-20251111/Eureka_Server_Base",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -46,6 +50,7 @@
       <option name="presentableId" value="Default" />
       <updated>1761631250202</updated>
       <workItem from="1761631251850" duration="9000" />
+      <workItem from="1762870624016" duration="41000" />
     </task>
     <servers />
   </component>

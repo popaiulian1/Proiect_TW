@@ -12,7 +12,7 @@ import org.upstarters.student.services.IStudentService;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/student")
+@RequestMapping(path = "/students")
 public class StudentController {
 
     @Autowired

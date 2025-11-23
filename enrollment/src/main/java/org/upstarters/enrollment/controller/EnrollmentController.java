@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/private")
+@RequestMapping("/enrollments")
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;

@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   application:
-    name: "course-service"
+    name: "courses"
   zipkin:
     base-url: http://localhost:9411 #http://zipkin:9411
   datasource:
@@ -16,7 +16,7 @@ spring:
 
 eureka:
   instance:
-    preferIpAddress: false
+    preferIpAddress: true
   client:
     fetchRegistry: true
     registerWithEureka: true

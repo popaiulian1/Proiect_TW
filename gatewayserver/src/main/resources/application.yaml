@@ -52,3 +52,7 @@ logging:
 build:
   version: ${COURSES_VERSION:local}
 
+gateway:
+  security:
+    admin-key: ${ADMIN_KEY}
+

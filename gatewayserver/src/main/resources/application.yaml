@@ -60,6 +60,9 @@ management:
 
 logging:
   level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security.oauth2: DEBUG
     com:
       example:
         gatewayserver: INFO

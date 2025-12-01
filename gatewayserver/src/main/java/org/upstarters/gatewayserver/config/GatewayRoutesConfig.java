@@ -16,7 +16,7 @@ public class GatewayRoutesConfig {
                         .filters(f -> f
                                 .addRequestHeader("X-Service", "courses-service")
                                 .addResponseHeader("X-Service", "courses-service")
-                                .rewritePath("/Proiect_TW/courses/(?<segment>.*)", "/${segment}")
+                                .rewritePath("/Proiect_TW/(?<segment>.*)", "/${segment}")
                         )
                         .uri("lb://courses"))
                 .route(p -> p

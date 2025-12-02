@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.upstarters.student.dtos.StudentDTO;
 import org.upstarters.student.enums.Major;
@@ -18,42 +19,49 @@ public class StudentController {
     @Autowired
     private IStudentService studentService;
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<StudentDTO> createStudent(@Valid @RequestBody StudentDTO studentDTO) {
         StudentDTO createdStudent = studentService.addStudent(studentDTO);
         return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getByEmail/{email}")
     public ResponseEntity<StudentDTO> fetchStudent(@Valid @PathVariable String email) {
         StudentDTO fetchedStudent = studentService.fetchStudent(email);
         return new ResponseEntity<>(fetchedStudent, HttpStatus.FOUND);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getStudents")
     public ResponseEntity<List<StudentDTO>> fetchStudent() {
         List<StudentDTO> fetchedStudents = studentService.fetchStudents();
         return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
     }
 
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     @GetMapping("/countStudents")
     public ResponseEntity<Long> countStudents() {
         Long numberOfStudents = studentService.countStudents();
         return new ResponseEntity<>(numberOfStudents, HttpStatus.FOUND);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getStudentsByMajor/{major}")
     public ResponseEntity<List<StudentDTO>> fetchStudentByMajor(@Valid @PathVariable String major) {
         List<StudentDTO> fetchedStudents = studentService.fetchStudentsByMajor(major);
         return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{email}")
     public ResponseEntity<StudentDTO> updateStudent(@Valid @PathVariable String email, @Valid @RequestBody StudentDTO studentDTO) {
         StudentDTO updatedStudent = studentService.updateStudent(email, studentDTO);
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{email}")
     public ResponseEntity<Boolean> deleteStudent(@Valid @PathVariable String email) {
         boolean deleted = studentService.deleteStudent(email);

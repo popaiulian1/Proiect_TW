@@ -1,12 +1,23 @@
 package org.upstarters.gatewayserver.auth;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcReactiveOAuth2UserService;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.userinfo.ReactiveOAuth2UserService;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Configuration
@@ -19,6 +30,14 @@ public class SecurityConfig {
                         .authenticationSuccessHandler(successHandler()))
                 .oauth2Client(Customizer.withDefaults())
                 .authorizeExchange(exchange -> exchange
+                        .pathMatchers(HttpMethod.POST, "Proiect_TW/students/create").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, "Proiect_TW/students/getByEmail/{email}").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, "Proiect_TW/students/getStudents").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, "Proiect_TW/students/countStudents").hasAnyRole("ADMIN", "STUDENT")
+                        .pathMatchers(HttpMethod.GET, "Proiect_TW/students/getStudentsByMajor/{major}").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.PUT, "Proiect_TW/students/update/{email}").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "Proiect_TW/students/delete/{email}").hasRole("ADMIN")
+
                         .anyExchange().authenticated())
                 .csrf(csrf -> csrf.disable());
         return http.build();
@@ -41,5 +60,33 @@ public class SecurityConfig {
 
             return webFilterExchange.getExchange().getResponse().setComplete();
         };
+    }
+
+    @Bean
+    public ReactiveOAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
+        final OidcReactiveOAuth2UserService delegate = new OidcReactiveOAuth2UserService();
+
+        return (userRequest -> delegate.loadUser(userRequest)
+                .map(oidcUser -> {
+                    Set<GrantedAuthority> mappedAuthorities = new HashSet<>(oidcUser.getAuthorities());
+                    String email = oidcUser.getEmail();
+
+                    if(email != null) {
+                        String emailLowerCase = email.toLowerCase();
+
+                        if(emailLowerCase.endsWith("@gmail.com")) {
+                            mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
+                        }
+
+                        if(emailLowerCase.endsWith("@unitbv.com") || emailLowerCase.startsWith("lv.")) {
+                            mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                        }
+                    }
+
+                    System.out.println("User: " + email + " | Mapped authorities: " + mappedAuthorities);
+
+                    return new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
+                })
+        );
     }
 }

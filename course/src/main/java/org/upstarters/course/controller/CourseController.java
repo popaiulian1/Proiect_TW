@@ -32,7 +32,7 @@ public class CourseController {
     //endregion
 
     //region Get Endpoints
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getAllCourses")
     public ResponseEntity<Iterable<CourseDto>> getAllCourses() {
         Iterable<CourseDto> courseDtos = courseService.getAllCourses();
@@ -42,7 +42,7 @@ public class CourseController {
                 .body(courseDtos);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
     @GetMapping("/getCourseById/{courseId}")
     public ResponseEntity<CourseDto> getCourseById(@PathVariable Long courseId) {
         return courseService.getCourseById(courseId)
@@ -50,7 +50,7 @@ public class CourseController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
     @GetMapping("/getCoursesByDepartment/{department}")
     public ResponseEntity<Iterable<CourseDto>> getCoursesByDepartment(@PathVariable String department) {
         Iterable<CourseDto> courseDtos = courseService.getCoursesByDepartment(department);
@@ -60,7 +60,7 @@ public class CourseController {
                 .body(courseDtos);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
     @GetMapping("getAllAvailableCourses")
     public ResponseEntity<Iterable<CourseDto>> getAllAvailableCourses() {
         Iterable<CourseDto> availableCoursesDtos = courseService.getCoursesAvailable();
@@ -70,7 +70,7 @@ public class CourseController {
                 .body(availableCoursesDtos);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
     @GetMapping("/getCoursesSortedByCapacity")
     public ResponseEntity<Iterable<CourseDto>> getCoursesSortedByCapacity() {
         Iterable<CourseDto> courseDtos = courseService.getCoursesSortedByCapacity();
@@ -100,9 +100,9 @@ public class CourseController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping("/updateCapacity/{tile}")
-    public ResponseEntity<String> updateCapacity(@PathVariable String tile, @RequestParam Integer capacity) {
-        Boolean isUpdated = courseService.updateCapacityOfCourse(capacity, tile);
+    @PatchMapping("/updateCapacity/{title}")
+    public ResponseEntity<String> updateCapacity(@PathVariable String title, @RequestParam Integer capacity) {
+        Boolean isUpdated = courseService.updateCapacityOfCourse(capacity, title);
 
         if (isUpdated) {
             return ResponseEntity

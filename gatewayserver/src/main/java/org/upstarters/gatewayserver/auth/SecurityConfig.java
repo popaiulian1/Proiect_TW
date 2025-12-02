@@ -30,7 +30,16 @@ public class SecurityConfig {
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/login/**", "/oauth2/**").permitAll()
 
-                        .pathMatchers("/Proiect_TW/courses/**").hasAnyRole("ADMIN", "STUDENT")
+                        .pathMatchers(HttpMethod.POST, "/Proiect_TW/courses/addCourse").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getAllCourses").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getCourseById/{courseId}").hasAnyRole("ADMIN", "STUDENT")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getCoursesByDepartment/{department}").hasAnyRole("ADMIN", "STUDENT")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getAllAvailableCourses").hasAnyRole("ADMIN", "STUDENT")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getCoursesSortedByCapacity").hasAnyRole("ADMIN", "STUDENT")
+                        .pathMatchers(HttpMethod.PUT, "/Proiect_TW/courses/updateCourse").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.PATCH, "/Proiect_TW/courses/updateCapacity/{title}").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/Proiect_TW/courses/deleteCourse/{title}").hasRole("ADMIN")
+
 
                         .anyExchange().authenticated())
                 .csrf(csrf -> csrf.disable());

@@ -2,6 +2,9 @@ package org.upstarters.course.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.upstarters.course.dto.FullCourseDto;
+
+import java.util.Optional;
 
 @Entity
 @Table (name = "courses")
@@ -70,6 +73,7 @@ public class Course {
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
+
 
     //endregion
 }

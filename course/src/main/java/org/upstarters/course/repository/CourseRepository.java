@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.upstarters.course.dto.CourseDto;
+import org.upstarters.course.dto.FullCourseDto;
 import org.upstarters.course.entity.Course;
 
 import java.util.List;
@@ -17,4 +18,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findCourseAvailable();
 
     List<Course> findAllByOrderByCapacityAsc();
+
 }

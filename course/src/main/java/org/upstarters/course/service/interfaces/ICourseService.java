@@ -1,6 +1,7 @@
 package org.upstarters.course.service.interfaces;
 
 import org.upstarters.course.dto.CourseDto;
+import org.upstarters.course.dto.FullCourseDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +17,5 @@ public interface ICourseService {
     Boolean updateCapacityOfCourse(Integer capacity, String title);
     List<CourseDto> getCoursesAvailable();
     List<CourseDto> getCoursesSortedByCapacity();
+    Optional<FullCourseDto> getFullCourseByTitle(String title);
 }

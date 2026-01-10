@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.upstarters.course.dto.CourseDto;
+import org.upstarters.course.dto.FullCourseDto;
 import org.upstarters.course.service.CourseService;
 
 @RestController
@@ -78,6 +79,14 @@ public class CourseController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(courseDtos);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @GetMapping("/getByTitle/{title}")
+    public ResponseEntity<FullCourseDto> getCourseById(@PathVariable String title) {
+        return courseService.getFullCourseByTitle(title)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     //endregion

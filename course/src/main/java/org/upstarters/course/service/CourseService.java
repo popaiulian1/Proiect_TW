@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.upstarters.course.dto.CourseDto;
+import org.upstarters.course.dto.FullCourseDto;
 import org.upstarters.course.entity.Course;
 import org.upstarters.course.mapper.CourseMapper;
 import org.upstarters.course.repository.CourseRepository;
@@ -44,6 +45,12 @@ public class CourseService implements ICourseService {
         return courses.stream()
                 .map(CourseMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public Optional<FullCourseDto> getFullCourseByTitle(String title) {
+        return Optional.ofNullable(courseRepository.findByTitle(title))
+                .map(CourseMapper::toFullDto);
     }
 
     @Override
@@ -132,4 +139,6 @@ public class CourseService implements ICourseService {
                 .map(CourseMapper::toDto)
                 .toList();
     }
+
+
 }

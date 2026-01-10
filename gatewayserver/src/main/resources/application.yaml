@@ -1,6 +1,10 @@
 server:
   port: 8072
 spring:
+  config:
+    import: optional:file:.env[.properties]
+  profiles:
+    active: test
   security:
     oauth2:
       client:
@@ -8,7 +12,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            scope: openid, profile, email
+            scope: openid, profile, email, https://www.googleapis.com/auth/cloud-platform
             redirect-uri: "http://localhost:8072/login/oauth2/code/google"
         provider:
           google:
@@ -65,7 +69,7 @@ logging:
         gatewayserver: INFO
 
 build:
-  version: ${COURSES_VERSION:local}
+  version: ${ENROLLMENTS_VERSION:local}
 
 gateway:
   security:

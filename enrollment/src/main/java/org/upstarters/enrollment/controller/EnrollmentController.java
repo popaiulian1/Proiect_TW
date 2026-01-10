@@ -3,6 +3,7 @@ package org.upstarters.enrollment.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.upstarters.enrollment.dto.EnrollmentDTO;
 import org.upstarters.enrollment.dto.EnrollmentRequestDTO;
@@ -29,11 +30,13 @@ public class EnrollmentController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
     @GetMapping("/ping")
     public String ping() {
         return "pong";
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
     @PostMapping("/create")
     public ResponseEntity<String> createEnrollment(@Valid @RequestBody EnrollmentRequestDTO enrollment) {
 
@@ -50,6 +53,7 @@ public class EnrollmentController {
         return new ResponseEntity<>("Enrollment created successfully", HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
     @GetMapping("/all")
     public ResponseEntity<List<EnrollmentDTO>> getAllEnrollments() {
         List<Enrollment> enrollments = enrollmentService.getAllEnrollments();
@@ -61,6 +65,7 @@ public class EnrollmentController {
         return new ResponseEntity<>(enrollmentDTOs, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
     @GetMapping("/enrollment/{id}")
     public ResponseEntity<EnrollmentDTO> getEnrollmentById(@Valid @PathVariable Long id) {
 
@@ -72,6 +77,7 @@ public class EnrollmentController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateEnrollment(@Valid @PathVariable Long id, @Valid @RequestBody EnrollmentUpdateDTO enrollmentUpdateDTO) {
         try{
@@ -82,6 +88,7 @@ public class EnrollmentController {
         return ResponseEntity.ok("Enrollment updated successfully");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteEnrollment(@Valid @PathVariable Long id) {
         try{
@@ -94,6 +101,7 @@ public class EnrollmentController {
 
     // =====> Additional endpoints <=====
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
     @GetMapping("/students/{course}")
     public ResponseEntity<List<EnrollmentDTO>> getStudentsByCourse(@Valid @PathVariable String course) {
 
@@ -107,6 +115,7 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollments);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/students/failed")
     public ResponseEntity<List<EnrollmentDTO>> getStudentsWithFailingGrades() {
 
@@ -120,6 +129,7 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollments);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/course/{course}/top5")
     public ResponseEntity<List<EnrollmentDTO>> getTop5StudentsInCourse(@Valid @PathVariable String course) {
 

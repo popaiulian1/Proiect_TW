@@ -1,6 +1,15 @@
 package org.upstarters.gatewayserver.auth;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.model.Binding;
+import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
+import com.google.api.services.cloudresourcemanager.model.Policy;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,12 +25,18 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Configuration
 public class SecurityConfig {
+
+    private final String idProject = "universitydemo-479314" ;
 
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http){
@@ -71,16 +86,12 @@ public class SecurityConfig {
                     Set<GrantedAuthority> mappedAuthorities = new HashSet<>(oidcUser.getAuthorities());
                     String email = oidcUser.getEmail();
 
-                    if(email != null) {
-                        String emailLowerCase = email.toLowerCase();
+                    try {
+                        Set<GrantedAuthority> iamRoles = getIamRoles(userRequest, oidcUser);
+                        mappedAuthorities.addAll(iamRoles);
 
-                        if(emailLowerCase.endsWith("@gmail.com")) {
-                            mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
-                        }
-
-                        if(emailLowerCase.endsWith("@unitbv.com") || emailLowerCase.startsWith("lv.")) {
-                            mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-                        }
+                    }catch (GeneralSecurityException | IOException e) {
+                        System.out.println(e.getMessage());
                     }
 
                     System.out.println("User: " + email + " | Mapped authorities: " + mappedAuthorities);
@@ -88,5 +99,49 @@ public class SecurityConfig {
                     return new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
                 })
         );
+    }
+
+    private Set<GrantedAuthority> getIamRoles(OidcUserRequest userRequest, OidcUser oidcUser) throws GeneralSecurityException, IOException {
+
+        String accessTokenValue = userRequest.getAccessToken().getTokenValue();
+        System.out.println("accessTokenValue: " + accessTokenValue);
+
+        AccessToken accessToken = new AccessToken(accessTokenValue, Date.from(userRequest.getAccessToken().getExpiresAt()));
+        System.out.println("accessToken: " + accessToken.getTokenValue());
+
+        GoogleCredentials credentials = GoogleCredentials.create(accessToken);
+        System.out.println("credentials: " + credentials);
+
+        CloudResourceManager handler = new CloudResourceManager.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                GsonFactory.getDefaultInstance(),
+                new HttpCredentialsAdapter(credentials))
+                .setApplicationName("GatewayServer")
+                .build();
+
+        GetIamPolicyRequest policyRequest = new GetIamPolicyRequest();
+        Policy policy =  handler.projects().getIamPolicy(idProject, policyRequest).execute();
+        System.out.println("policy: " + policy);
+
+        String email = oidcUser.getEmail();
+        String identifier = "user:" + email;
+
+        return policy.getBindings().stream()
+                .filter(binding -> binding.getMembers() != null && binding.getMembers().contains(identifier))
+                .map(Binding::getRole)
+                .peek(role -> System.out.println("Role is: " + role))
+                .map(this::mapIamRolesToApplicationRoles)
+                .collect(Collectors.toSet());
+
+    }
+
+    private GrantedAuthority mapIamRolesToApplicationRoles(String role) {
+        if("roles/owner".equals(role) || "roles/editor".equals(role))
+            return new SimpleGrantedAuthority("ROLE_ADMIN");
+
+        if("roles/viewer".equals(role))
+            return new SimpleGrantedAuthority("ROLE_STUDENT");
+
+        return new SimpleGrantedAuthority("ROLE_STUDENT");
     }
 }

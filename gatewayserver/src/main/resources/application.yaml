@@ -1,6 +1,10 @@
 server:
   port: 8072
 spring:
+  config:
+    import: optional:file:.env[.properties]
+  profiles:
+    active: test
   security:
     oauth2:
       client:
@@ -69,7 +73,7 @@ logging:
         gatewayserver: INFO
 
 build:
-  version: ${COURSES_VERSION:local}
+  version: ${ENROLLMENTS_VERSION:local}
 
 gateway:
   security:

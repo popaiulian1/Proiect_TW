@@ -2,7 +2,9 @@ server:
   port: 8083
 spring:
   application:
-    name: "enrollment-service"
+    name: "enrollments"
+  config:
+    import: optional:file:.env[.properties]
   zipkin:
     base-url: http://localhost:9411 #http://zipkin:9411
   datasource:

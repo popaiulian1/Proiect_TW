@@ -19,7 +19,7 @@ public class GatewayController {
 
     @GetMapping
     public ResponseEntity<String> university(){
-        return ResponseEntity.ok("Welcome to the University main page!");
+        return ResponseEntity.ok("Hello in University Gateway!");
     }
 
     //Google access token

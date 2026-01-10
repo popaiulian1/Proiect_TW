@@ -10,8 +10,23 @@ import com.google.api.services.cloudresourcemanager.model.Policy;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Date;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.api.services.cloudresourcemanager.model.Binding;
+import com.google.api.services.cloudresourcemanager.model.Policy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -34,10 +49,12 @@ import java.util.stream.Collectors;
 
 
 @Configuration
+@Profile("test")
 public class SecurityConfig {
 
     private final String idProject = "universitydemo-479314" ;
-
+    private final String idProject = "test-project-479314";
+  
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http){
         http
@@ -54,27 +71,35 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.DELETE, "Proiect_TW/students/delete/{email}").hasRole("ADMIN")
 
                         .anyExchange().authenticated())
+                        .pathMatchers(HttpMethod.POST, "/Proiect_TW/enrollments/create").hasAnyRole("STUDENT", "ADMIN")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/enrollments/all").hasAnyRole("STUDENT", "ADMIN")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/enrollments/enrollment/{id}").hasAnyRole("STUDENT", "ADMIN")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/enrollments/students/{course}").hasAnyRole("STUDENT", "ADMIN")
+                        .pathMatchers(HttpMethod.PUT, "/Proiect_TW/enrollments/update/{id}").hasAnyRole("STUDENT", "ADMIN")
+                        .anyExchange().hasAnyRole("ADMIN"))
                 .csrf(csrf -> csrf.disable());
         return http.build();
     }
 
     @Bean
     public ServerAuthenticationSuccessHandler successHandler() {
-        return (webFilterExchange, authentication) -> {
-            System.out.println("Authenticated authorities at success: " + authentication.getAuthorities());
+            return (webFilterExchange, authentication) -> {
+                    System.out.println("Authenticated authorities at success: " + authentication.getAuthorities());
 
-            webFilterExchange
-                    .getExchange()
-                    .getResponse()
-                    .setStatusCode(org.springframework.http.HttpStatus.FOUND);
+                    webFilterExchange
+                                    .getExchange()
+                                    .getResponse()
+                                    .setStatusCode(org.springframework.http.HttpStatus.FOUND);
 
-            webFilterExchange
-                    .getExchange()
-                    .getResponse()
-                    .getHeaders().set("Location", "http://localhost:8072/university");
+                    webFilterExchange
+                                    .getExchange()
+                                    .getResponse()
+                                    .getHeaders().set("Location", "http://localhost:8072/university");
 
-            return webFilterExchange.getExchange().getResponse().setComplete();
-        };
+                    return webFilterExchange.getExchange().getResponse().setComplete();
+            };
+    }
+
     }
 
     @Bean
@@ -134,14 +159,16 @@ public class SecurityConfig {
                 .collect(Collectors.toSet());
 
     }
-
     private GrantedAuthority mapIamRolesToApplicationRoles(String role) {
-        if("roles/owner".equals(role) || "roles/editor".equals(role))
-            return new SimpleGrantedAuthority("ROLE_ADMIN");
+            if ("roles/owner".equals(role))
+                return new SimpleGrantedAuthority("ROLE_ADMIN");
 
-        if("roles/viewer".equals(role))
+            if ("roles/editor".equals(role))
+                return new SimpleGrantedAuthority("ROLE_ADMIN");
+
+            if ("roles/viewer".equals(role))
+                return new SimpleGrantedAuthority("ROLE_STUDENT");
+
             return new SimpleGrantedAuthority("ROLE_STUDENT");
-
-        return new SimpleGrantedAuthority("ROLE_STUDENT");
     }
 }

@@ -1,7 +1,7 @@
 server:
   port: 8072
 spring:
- application:
+  application:
     name: "gatewayserver"
   config:
     import: optional:file:.env[.properties]

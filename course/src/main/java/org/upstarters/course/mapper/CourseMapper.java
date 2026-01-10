@@ -1,6 +1,7 @@
 package org.upstarters.course.mapper;
 
 import org.upstarters.course.dto.CourseDto;
+import org.upstarters.course.dto.FullCourseDto;
 import org.upstarters.course.entity.Course;
 
 public class CourseMapper {
@@ -18,6 +19,24 @@ public class CourseMapper {
                 courseDto.getTitle(),
                 courseDto.getDepartment(),
                 courseDto.getCapacity()
+        );
+    }
+
+    public static FullCourseDto toFullDto(Course courseEntity) {
+        return new FullCourseDto(
+                courseEntity.getCourseId(),
+                courseEntity.getTitle(),
+                courseEntity.getDepartment(),
+                courseEntity.getCapacity()
+        );
+    }
+
+    public static Course toFullEntity(FullCourseDto fullCourseDto) {
+        return new Course(
+                fullCourseDto.getId(),
+                fullCourseDto.getTitle(),
+                fullCourseDto.getDepartment(),
+                fullCourseDto.getCapacity()
         );
     }
 }

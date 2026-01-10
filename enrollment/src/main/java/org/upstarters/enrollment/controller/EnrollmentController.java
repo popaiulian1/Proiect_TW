@@ -11,7 +11,9 @@ import org.upstarters.enrollment.dto.EnrollmentUpdateDTO;
 import org.upstarters.enrollment.entity.Enrollment;
 import org.upstarters.enrollment.mapper.EnrollmentMapper;
 import org.upstarters.enrollment.service.enrollment.EnrollmentService;
-
+import org.upstarters.enrollment.service.course.CourseAPIService;
+import org.upstarters.enrollment.service.student.StudentAPIService;
+import org.upstarters.enrollment.dto.StudentDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +29,6 @@ public class EnrollmentController {
                           EnrollmentMapper enrollmentMapperInstance) {
         enrollmentService = enrollmentServiceInstance;
         enrollmentMapper = enrollmentMapperInstance;
-
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
@@ -144,4 +145,16 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollments);
     }
 
+    // =====> Endpoints using other services <=====
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
+    @GetMapping("/student/enrollment/{enrollmentId}/student-details")
+    public ResponseEntity<StudentDTO> getStudentDetailsFromEnrollment(@Valid @PathVariable Long enrollmentId) {
+        try {
+            StudentDTO studentDetails = enrollmentService.getStudentDetailsFromEnrollment(enrollmentId);
+            return ResponseEntity.ok(studentDetails);
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

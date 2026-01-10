@@ -1,29 +1,37 @@
 package org.upstarters.enrollment.service.course;
 
 import org.springframework.stereotype.Service;
+import org.upstarters.enrollment.dto.FullCourseDTO;
+import org.upstarters.enrollment.dto.CourseDTO;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class CourseAPIService implements ICourseAPIService{
 
+    private final CourseFeignClient courseFeignClient;
+
+    CourseAPIService(CourseFeignClient courseFeignClientInstance) {
+        this.courseFeignClient = courseFeignClientInstance;
+    }
+
     @Override
     public Long getCourseIdByName(String courseName) {
-        return switch (courseName) {
-            case "Mathematics" -> 1L;
-            case "Biology" -> 3L;
-            case "History" -> 2L;
-            case "Literature" -> 4L;
-            default -> null;
-        };
+        try {
+            FullCourseDTO response = courseFeignClient.getCourseByTitle(courseName);
+            return response.getId();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get course id", e);
+        }
     }
 
     @Override
     public String getCourseNameById(Long courseId) {
-        return switch (courseId.intValue()) {
-            case 1 -> "Mathematics";
-            case 2 -> "History";
-            case 3 -> "Biology";
-            case 4 -> "Literature";
-            default -> "Unknown";
-        };
+        try {
+            CourseDTO response = courseFeignClient.getCourseById(courseId);
+            return response.getTitle();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get course name", e);
+        }
     }
 }

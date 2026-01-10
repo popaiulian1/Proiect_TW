@@ -71,6 +71,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
+        <!-- Cloud Resource Manager API access-->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-cloudresourcemanager</artifactId>
+            <version>v1-rev20240310-2.0.0</version>
+        </dependency>
+
+        <!-- Authenticating with Google services using OAuth2 -->
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-oauth2-http</artifactId>
+            <version>1.23.0</version>
+        </dependency>
         <!-- OAuth2 client for login -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,7 +103,7 @@
             <artifactId>spring-security-config</artifactId>
         </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-cloudresourcemanager</artifactId>
             <version>v1-rev20240310-2.0.0</version>

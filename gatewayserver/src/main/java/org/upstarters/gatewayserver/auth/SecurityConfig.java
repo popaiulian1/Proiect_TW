@@ -21,7 +21,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcReactiveOAuth2UserService;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.userinfo.ReactiveOAuth2UserService;
@@ -32,10 +31,6 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Configuration
@@ -161,77 +156,5 @@ public class SecurityConfig {
                 return new SimpleGrantedAuthority("ROLE_STUDENT");
 
             return new SimpleGrantedAuthority("ROLE_STUDENT");
-    }
-
-    @Bean
-    public ReactiveOAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
-        final OidcReactiveOAuth2UserService delegate = new OidcReactiveOAuth2UserService();
-
-        return (userRequest) -> delegate.loadUser(userRequest)
-                .map(oidcUser -> {
-                    Set<GrantedAuthority> mappedAuthorities = new HashSet<>(oidcUser.getAuthorities());
-                    String email = oidcUser.getEmail();
-
-                    try {
-                        Set<GrantedAuthority> iamRoles = getIamRoles(userRequest, oidcUser);
-                        mappedAuthorities.addAll(iamRoles);
-
-                    }catch (GeneralSecurityException | IOException e) {
-                        System.out.println(e.getMessage());
-                    }
-
-                    System.out.println("Mapped authorities: " + mappedAuthorities);
-
-                    System.out.println("User: " + email + " | Mapped authorities: " + mappedAuthorities);
-
-                    return new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
-                });
-    }
-
-    private Set<GrantedAuthority> getIamRoles(OidcUserRequest userRequest, OidcUser oidcUser)
-            throws GeneralSecurityException, IOException {
-
-        String accessTokenValue = userRequest.getAccessToken().getTokenValue();
-        System.out.println("accessTokenValue: " + accessTokenValue);
-
-        AccessToken accessToken = new AccessToken(accessTokenValue, Date.from(userRequest.getAccessToken().getExpiresAt()));
-        System.out.println("accessToken: " + accessToken.getTokenValue());
-
-        GoogleCredentials credentials = GoogleCredentials.create(accessToken);
-        System.out.println("credentials: " + credentials);
-
-        CloudResourceManager handler = new CloudResourceManager.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GsonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credentials))
-                .setApplicationName("GatewayServer")
-                .build();
-
-        GetIamPolicyRequest policyRequest = new GetIamPolicyRequest();
-        Policy policy =  handler.projects().getIamPolicy(idProject, policyRequest).execute();
-        System.out.println("policy: " + policy);
-
-        String email = oidcUser.getEmail();
-        String identifier = "user:" + email;
-
-        return policy.getBindings().stream()
-                .filter(binding -> binding.getMembers() != null && binding.getMembers().contains(identifier))
-                .map(Binding::getRole)
-                .peek(role -> System.out.println("Role is: " + role))
-                .map(this::mapIamRolesToApplicationRoles)
-                .collect(Collectors.toSet());
-    }
-
-    private GrantedAuthority mapIamRolesToApplicationRoles(String role) {
-        if("roles/owner".equals(role))
-            return new SimpleGrantedAuthority("ROLE_ADMIN");
-
-        if("roles/editor".equals(role))
-            return new SimpleGrantedAuthority("ROLE_ADMIN");
-
-        if("roles/viewer".equals(role))
-            return new SimpleGrantedAuthority("ROLE_STUDENT");
-
-        return new SimpleGrantedAuthority("ROLE_STUDENT");
     }
 }

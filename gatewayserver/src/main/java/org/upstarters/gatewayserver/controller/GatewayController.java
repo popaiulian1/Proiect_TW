@@ -41,6 +41,4 @@ public class GatewayController {
         info.put("authorities", oidcUser.getAuthorities());
         return info;
     }
-
-
 }

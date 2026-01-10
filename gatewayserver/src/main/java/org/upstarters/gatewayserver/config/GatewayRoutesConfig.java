@@ -24,7 +24,7 @@ public class GatewayRoutesConfig {
                         .filters(f -> f
                                 .addRequestHeader("X-Service", "students-service")
                                 .addResponseHeader("X-Service", "students-service")
-                                .rewritePath("/Proiect_TW/students/(?<segment>.*)", "/${segment}")
+                                .rewritePath("/Proiect_TW/(?<segment>.*)", "/${segment}")
                         )
                         .uri("lb://students"))
                 .route(p -> p
@@ -32,7 +32,7 @@ public class GatewayRoutesConfig {
                         .filters(f -> f
                                 .addRequestHeader("X-Service", "enrollments-service")
                                 .addResponseHeader("X-Service", "enrollments-service")
-                                .rewritePath("/Proiect_TW/enrollments/(?<segment>.*)", "/${segment}")
+                                .rewritePath("/Proiect_TW/(?<segment>.*)", "/${segment}")
                         )
                         .uri("lb://enrollments"))
                 .build();

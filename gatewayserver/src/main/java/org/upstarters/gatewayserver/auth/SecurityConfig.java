@@ -1,6 +1,5 @@
 package org.upstarters.gatewayserver.auth;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
@@ -15,15 +14,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.Date;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.AccessToken;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.api.services.cloudresourcemanager.model.Binding;
-import com.google.api.services.cloudresourcemanager.model.Policy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -31,7 +21,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcReactiveOAuth2UserService;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.userinfo.ReactiveOAuth2UserService;
@@ -42,10 +31,6 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Configuration
@@ -53,7 +38,7 @@ import java.util.stream.Collectors;
 public class SecurityConfig {
 
     private final String idProject = "universitydemo-479314" ;
-    private final String idProject = "test-project-479314";
+    //private final String idProject = "test-project-479314";
   
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http){
@@ -62,20 +47,14 @@ public class SecurityConfig {
                         .authenticationSuccessHandler(successHandler()))
                 .oauth2Client(Customizer.withDefaults())
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers(HttpMethod.POST, "Proiect_TW/students/create").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.GET, "Proiect_TW/students/getByEmail/{email}").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.GET, "Proiect_TW/students/getStudents").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.GET, "Proiect_TW/students/countStudents").hasAnyRole("ADMIN", "STUDENT")
-                        .pathMatchers(HttpMethod.GET, "Proiect_TW/students/getStudentsByMajor/{major}").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.PUT, "Proiect_TW/students/update/{email}").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.DELETE, "Proiect_TW/students/delete/{email}").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, "Proiect_TW/students/countStudents").hasAnyRole("STUDENT", "ADMIN")
 
-                        .anyExchange().authenticated())
                         .pathMatchers(HttpMethod.POST, "/Proiect_TW/enrollments/create").hasAnyRole("STUDENT", "ADMIN")
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/enrollments/all").hasAnyRole("STUDENT", "ADMIN")
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/enrollments/enrollment/{id}").hasAnyRole("STUDENT", "ADMIN")
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/enrollments/students/{course}").hasAnyRole("STUDENT", "ADMIN")
                         .pathMatchers(HttpMethod.PUT, "/Proiect_TW/enrollments/update/{id}").hasAnyRole("STUDENT", "ADMIN")
+
                         .anyExchange().hasAnyRole("ADMIN"))
                 .csrf(csrf -> csrf.disable());
         return http.build();
@@ -98,8 +77,6 @@ public class SecurityConfig {
 
                     return webFilterExchange.getExchange().getResponse().setComplete();
             };
-    }
-
     }
 
     @Bean

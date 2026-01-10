@@ -3,6 +3,7 @@ package org.upstarters.enrollment.service.enrollment;
 import org.springframework.stereotype.Service;
 import org.upstarters.enrollment.dto.EnrollmentDTO;
 import org.upstarters.enrollment.dto.EnrollmentUpdateDTO;
+import org.upstarters.enrollment.dto.StudentDTO;
 import org.upstarters.enrollment.entity.Enrollment;
 import org.upstarters.enrollment.mapper.EnrollmentMapper;
 import org.upstarters.enrollment.repository.EnrollmentRepository;
@@ -10,11 +11,13 @@ import org.upstarters.enrollment.service.course.CourseAPIService;
 import org.upstarters.enrollment.service.student.StudentAPIService;
 
 import jakarta.persistence.EntityNotFoundException;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.upstarters.enrollment.entity.Student;
 
 @Service
 public class EnrollmentService implements IEnrollmentService {
@@ -102,9 +105,7 @@ public class EnrollmentService implements IEnrollmentService {
 
     @Override
     public List<EnrollmentDTO> studentsFilteredByCourse(String course) {
-//        System.out.println("Looking for course: '" + course + "'");
         Long courseId = courseAPIService.getCourseIdByName(course);
-//        System.out.println("Found courseId: " + courseId);
 
         if (courseId == null){
             throw new EntityNotFoundException("Course not found with name: " + course);
@@ -112,11 +113,6 @@ public class EnrollmentService implements IEnrollmentService {
 
         List<Enrollment> enrollments = enrollmentRepository.findAllByCourseId(courseId)
                 .orElse(List.of());
-//        System.out.println("Found enrollments: " + enrollments.size());
-
-//        for ( Enrollment enrollment : enrollments ) {
-//            System.out.println("Found enrollment: " + " " + enrollment.getId() + " " + enrollment.getStudentId() + " " + enrollment.getCourseId());
-//        }
 
         return enrollments.stream()
                 .map(enrollmentMapper::toDto)
@@ -149,5 +145,37 @@ public class EnrollmentService implements IEnrollmentService {
                 .limit(5)
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<EnrollmentDTO> getEnrollmentsByStudent(String student) {
+        Long studentId = studentAPIService.getStudentIdByName(student);
+
+        if (studentId == null) {
+            throw new EntityNotFoundException("Student not found with name: " + student);
+        }
+
+        List<Enrollment> enrollments = enrollmentRepository.findAllByStudentId(studentId)
+                .orElse(List.of());
+
+        return enrollments.stream()
+                .map(enrollmentMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public StudentDTO getStudentDetailsFromEnrollment(Long enrollmentId) {
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Enrollment not found with id: " + enrollmentId));
+
+        Long studentId = enrollment.getStudentId();
+        String studentName = studentAPIService.getStudentNameById(studentId);
+
+        if (studentName == null) {
+            throw new EntityNotFoundException("Student not found with id: " + studentId);
+        }
+
+        StudentDTO studentDetails = studentAPIService.getStudentByEmail(studentName);
+        return studentDetails;
     }
 }

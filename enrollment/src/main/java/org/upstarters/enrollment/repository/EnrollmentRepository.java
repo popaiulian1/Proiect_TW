@@ -1,11 +1,11 @@
 package org.upstarters.enrollment.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.upstarters.enrollment.entity.Enrollment;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
@@ -16,4 +16,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     boolean existsByStudentId(Long studentId);
     Optional<List<Enrollment>> findAllByCourseId(Long courseId);
     Optional<List<Enrollment>> findAllByGradeLessThanEqual(double grade);
+    Optional<List<Enrollment>> findAllByStudentId(Long studentId);
 }

@@ -37,9 +37,9 @@ import java.security.GeneralSecurityException;
 @Profile("test")
 public class SecurityConfig {
 
-    private final String idProject = "tw-project-479910";
+    //private final String idProject = "tw-project-479910";
 
-    //private final String idProject = "universitydemo-479314" ;
+    private final String idProject = "universitydemo-479314";
     //private final String idProject = "test-project-479314";
   
     @Bean

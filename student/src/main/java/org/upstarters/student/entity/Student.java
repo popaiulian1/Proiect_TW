@@ -22,7 +22,6 @@ public class Student {
     private String email;
 
     @Column(name = "major")
-    //private Major major;
     private String major;
 
     public Student(String firstname, String lastname, String email, String major) {

@@ -67,4 +67,11 @@ public class StudentController {
         boolean deleted = studentService.deleteStudent(email);
         return ResponseEntity.ok(deleted);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/getId/{email}")
+    public ResponseEntity<Long> fetchStudentIdFromEmail(@Valid @PathVariable String email) {
+        Long id = studentService.fetchStudentIdFromEmail(email);
+        return ResponseEntity.ok(id);
+    }
 }

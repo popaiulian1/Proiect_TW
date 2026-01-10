@@ -82,4 +82,12 @@ public class StudentServiceImplementations implements IStudentService {
         studentRepository.delete(student);
         return true;
     }
+
+    @Override
+    public long fetchStudentIdFromEmail(String email) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student with this email does not exist!"));
+
+        return student.getId();
+    }
 }

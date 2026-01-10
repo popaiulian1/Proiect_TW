@@ -13,4 +13,5 @@ public interface IStudentService {
     List<StudentDTO> fetchStudents();
     StudentDTO updateStudent(String email, StudentDTO studentDTO);
     boolean deleteStudent(String email);
+    long fetchStudentIdFromEmail(String email);
 }

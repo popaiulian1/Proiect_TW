@@ -25,3 +25,6 @@
 hs_err_pid*
 replay_pid*
 
+enrollment/.env
+eurekaserver/.env
+gatewayserver/.env

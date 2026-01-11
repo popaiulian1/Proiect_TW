@@ -105,4 +105,21 @@ public class StudentServiceImplementations implements IStudentService {
 
         return recommendedCourses;
     }
+
+    @Override
+    public StudentDTO updateMajorFromCourse(String email, String courseTitle) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student with this email does not exist!"));
+
+        ExternalCourseDTO course = coursesFeignClient.fetchCourseByTitle(courseTitle);
+
+        if (course == null) {
+            throw new RuntimeException("Course with title " + courseTitle + " not found in Course Service!");
+        }
+
+        student.setMajor(course.getDepartment());
+        studentRepository.save(student);
+
+        return StudentMapper.toDTO(student);
+    }
 }

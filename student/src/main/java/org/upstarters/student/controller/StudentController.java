@@ -81,4 +81,14 @@ public class StudentController {
         List<ExternalCourseDTO> recommendedCourses = studentService.getRecommendedCourses(email);
         return new ResponseEntity<>(recommendedCourses, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/update-major-from-course/{email}/{courseTitle}")
+    public ResponseEntity<StudentDTO> updateMajorFromCourse(
+            @PathVariable String email,
+            @PathVariable String courseTitle) {
+
+        StudentDTO updatedStudent = studentService.updateMajorFromCourse(email, courseTitle);
+        return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
+    }
 }

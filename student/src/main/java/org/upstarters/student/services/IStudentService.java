@@ -14,5 +14,7 @@ public interface IStudentService {
     StudentDTO updateStudent(String email, StudentDTO studentDTO);
     boolean deleteStudent(String email);
     long fetchStudentIdFromEmail(String email);
+
     List<ExternalCourseDTO> getRecommendedCourses(String email);
+    StudentDTO updateMajorFromCourse(String email, String courseTitle);
 }

@@ -12,4 +12,7 @@ public interface CoursesFeignClient {
 
     @GetMapping("/getCoursesByDepartment/{department}")
     List<ExternalCourseDTO> fetchCoursesByDepartment(@PathVariable String department);
+
+    @GetMapping("/getByTitle/{title}")
+    ExternalCourseDTO fetchCourseByTitle(@PathVariable String title);
 }

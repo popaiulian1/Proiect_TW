@@ -2,9 +2,9 @@ package org.upstarters.student.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.upstarters.student.dtos.ExternalCourseDTO;
 import org.upstarters.student.dtos.StudentDTO;
 import org.upstarters.student.entity.Student;
-import org.upstarters.student.enums.Major;
 import org.upstarters.student.mapper.StudentMapper;
 import org.upstarters.student.repository.StudentRepository;
 
@@ -16,6 +16,9 @@ public class StudentServiceImplementations implements IStudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private CoursesFeignClient coursesFeignClient;
 
     @Override
     public StudentDTO addStudent(StudentDTO studentDTO) {
@@ -89,5 +92,17 @@ public class StudentServiceImplementations implements IStudentService {
                 .orElseThrow(() -> new RuntimeException("Student with this email does not exist!"));
 
         return student.getId();
+    }
+
+    @Override
+    public List<ExternalCourseDTO> getRecommendedCourses(String email) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Student with this email does not exist!"));
+
+        String major = student.getMajor();
+
+        List<ExternalCourseDTO> recommendedCourses = coursesFeignClient.fetchCoursesByDepartment(major);
+
+        return recommendedCourses;
     }
 }

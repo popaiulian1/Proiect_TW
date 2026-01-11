@@ -1,12 +1,9 @@
 package org.upstarters.student.dtos;
 
-import org.upstarters.student.enums.Major;
-
 public class StudentDTO {
     private String firstName;
     private String lastName;
     private String email;
-    //private Major major;
     private String major;
 
     public StudentDTO(String firstName, String lastName, String email, String major) {

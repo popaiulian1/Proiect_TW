@@ -1,7 +1,6 @@
 package org.upstarters.student.entity;
 
 import jakarta.persistence.*;
-import org.upstarters.student.enums.Major;
 
 @Entity
 @Table(name = "students")

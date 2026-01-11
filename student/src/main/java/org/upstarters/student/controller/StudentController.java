@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.upstarters.student.dtos.ExternalCourseDTO;
 import org.upstarters.student.dtos.StudentDTO;
-import org.upstarters.student.enums.Major;
 import org.upstarters.student.services.IStudentService;
 
 import java.util.List;
@@ -73,5 +73,12 @@ public class StudentController {
     public ResponseEntity<Long> fetchStudentIdFromEmail(@Valid @PathVariable String email) {
         Long id = studentService.fetchStudentIdFromEmail(email);
         return ResponseEntity.ok(id);
+    }
+
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
+    @GetMapping("/recommendations/{email}")
+    public ResponseEntity<List<ExternalCourseDTO>> getRecommendedCourses(@PathVariable String email) {
+        List<ExternalCourseDTO> recommendedCourses = studentService.getRecommendedCourses(email);
+        return new ResponseEntity<>(recommendedCourses, HttpStatus.OK);
     }
 }

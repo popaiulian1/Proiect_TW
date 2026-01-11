@@ -51,7 +51,7 @@ public class StudentController {
     @GetMapping("/getStudentsByMajor/{major}")
     public ResponseEntity<List<StudentDTO>> fetchStudentByMajor(@Valid @PathVariable String major) {
         List<StudentDTO> fetchedStudents = studentService.fetchStudentsByMajor(major);
-        return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
+        return new ResponseEntity<>(fetchedStudents, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

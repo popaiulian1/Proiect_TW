@@ -57,6 +57,7 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getCoursesSortedByCapacity").hasAnyRole("ADMIN", "STUDENT")
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getByTitle/{title}").hasAnyRole("ADMIN", "STUDENT")
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getAllStudents").hasAnyRole("ADMIN", "STUDENT")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getStudentsByDepartment/{department}").hasAnyRole("ADMIN", "STUDENT")
 
                         .pathMatchers(HttpMethod.GET, "Proiect_TW/students/countStudents").hasAnyRole("STUDENT", "ADMIN")
 

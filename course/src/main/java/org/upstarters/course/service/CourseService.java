@@ -150,4 +150,9 @@ public class CourseService implements ICourseService {
     public List<ExternalStudentDTO> getStudents() {
         return studentsFeignClient.getStudents();
     }
+
+    @Override
+    public List<ExternalStudentDTO> getStudentsByDepartment(String department) {
+        return studentsFeignClient.getStudentsByMajor(department);
+    }
 }

@@ -102,6 +102,16 @@ public class CourseController {
                 .body(students);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @GetMapping("/getStudentsByDepartment/{department}")
+    public ResponseEntity<List<ExternalStudentDTO>> getStudentsByDepartment(@PathVariable String department) {
+        List<ExternalStudentDTO> students = courseService.getStudentsByDepartment(department);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(students);
+    }
+
     //endregion
 
     //region Update Endpoints

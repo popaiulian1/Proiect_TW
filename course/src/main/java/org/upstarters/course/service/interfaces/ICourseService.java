@@ -21,4 +21,5 @@ public interface ICourseService {
     Optional<FullCourseDto> getFullCourseByTitle(String title);
 
     List<ExternalStudentDTO> getStudents();
+    List<ExternalStudentDTO> getStudentsByDepartment(String department);
 }

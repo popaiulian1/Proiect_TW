@@ -155,4 +155,22 @@ public class CourseService implements ICourseService {
     public List<ExternalStudentDTO> getStudentsByDepartment(String department) {
         return studentsFeignClient.getStudentsByMajor(department);
     }
+
+    @Override
+    public Boolean updateCourseCapacityBasedOnStudentCount(String courseTitle, String department) {
+        List<ExternalStudentDTO> students = studentsFeignClient.getStudentsByMajor(department);
+
+        if (students == null) {
+            return false;
+        }
+
+        Course existingCourse = courseRepository.findByTitle(courseTitle);
+        if (existingCourse == null) {
+            return false;
+        }
+
+        existingCourse.setCapacity(students.size());
+        courseRepository.save(existingCourse);
+        return true;
+    }
 }

@@ -147,6 +147,25 @@ public class CourseController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @PutMapping("/syncCapacityWithStudents/{title}")
+    public ResponseEntity<String> syncCapacityWithStudents(
+            @PathVariable String title,
+            @RequestParam String department) {
+
+        Boolean isUpdated = courseService.updateCourseCapacityBasedOnStudentCount(title, department);
+
+        if (isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("Course capacity synchronized with student count from " + department);
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Could not perform synchronization. Course not found or student service unavailable.");
+        }
+    }
+
     //endregion
 
     //region Delete Endpoints

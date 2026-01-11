@@ -22,4 +22,5 @@ public interface ICourseService {
 
     List<ExternalStudentDTO> getStudents();
     List<ExternalStudentDTO> getStudentsByDepartment(String department);
+    Boolean updateCourseCapacityBasedOnStudentCount(String courseTitle, String department);
 }

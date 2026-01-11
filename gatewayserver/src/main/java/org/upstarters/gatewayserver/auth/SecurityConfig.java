@@ -37,9 +37,9 @@ import java.security.GeneralSecurityException;
 @Profile("test")
 public class SecurityConfig {
 
-    //private final String idProject = "tw-project-479910";
+    private final String idProject = "tw-project-479910";
 
-    private final String idProject = "universitydemo-479314";
+    //private final String idProject = "universitydemo-479314";
     //private final String idProject = "test-project-479314";
   
     @Bean
@@ -56,8 +56,10 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getAllAvailableCourses").hasAnyRole("ADMIN", "STUDENT")
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getCoursesSortedByCapacity").hasAnyRole("ADMIN", "STUDENT")
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getByTitle/{title}").hasAnyRole("ADMIN", "STUDENT")
+                        .pathMatchers(HttpMethod.GET, "/Proiect_TW/courses/getAllStudents").hasAnyRole("ADMIN", "STUDENT")
 
                         .pathMatchers(HttpMethod.GET, "Proiect_TW/students/countStudents").hasAnyRole("STUDENT", "ADMIN")
+
 
                         .pathMatchers(HttpMethod.POST, "/Proiect_TW/enrollments/create").hasAnyRole("STUDENT", "ADMIN")
                         .pathMatchers(HttpMethod.GET, "/Proiect_TW/enrollments/all").hasAnyRole("STUDENT", "ADMIN")

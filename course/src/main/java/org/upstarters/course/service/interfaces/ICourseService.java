@@ -1,6 +1,7 @@
 package org.upstarters.course.service.interfaces;
 
 import org.upstarters.course.dto.CourseDto;
+import org.upstarters.course.dto.ExternalStudentDTO;
 import org.upstarters.course.dto.FullCourseDto;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface ICourseService {
     List<CourseDto> getCoursesAvailable();
     List<CourseDto> getCoursesSortedByCapacity();
     Optional<FullCourseDto> getFullCourseByTitle(String title);
+
+    List<ExternalStudentDTO> getStudents();
 }

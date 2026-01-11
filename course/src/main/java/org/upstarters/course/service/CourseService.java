@@ -4,11 +4,13 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.upstarters.course.dto.CourseDto;
+import org.upstarters.course.dto.ExternalStudentDTO;
 import org.upstarters.course.dto.FullCourseDto;
 import org.upstarters.course.entity.Course;
 import org.upstarters.course.mapper.CourseMapper;
 import org.upstarters.course.repository.CourseRepository;
 import org.upstarters.course.service.interfaces.ICourseService;
+import org.upstarters.course.service.interfaces.StudentsFeignClient;
 
 import java.beans.Transient;
 import java.util.ArrayList;
@@ -19,10 +21,12 @@ import java.util.Optional;
 public class CourseService implements ICourseService {
 
     private final CourseRepository courseRepository;
+    private final StudentsFeignClient studentsFeignClient;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository) {
+    public CourseService(StudentsFeignClient studentsFeignClient, CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
+        this.studentsFeignClient = studentsFeignClient;
     }
 
     @Override
@@ -52,6 +56,8 @@ public class CourseService implements ICourseService {
         return Optional.ofNullable(courseRepository.findByTitle(title))
                 .map(CourseMapper::toFullDto);
     }
+
+
 
     @Override
     @Transactional
@@ -140,5 +146,8 @@ public class CourseService implements ICourseService {
                 .toList();
     }
 
-
+    @Override
+    public List<ExternalStudentDTO> getStudents() {
+        return studentsFeignClient.getStudents();
+    }
 }

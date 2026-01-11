@@ -37,7 +37,7 @@ public class StudentController {
     @GetMapping("/getStudents")
     public ResponseEntity<List<StudentDTO>> fetchStudent() {
         List<StudentDTO> fetchedStudents = studentService.fetchStudents();
-        return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
+        return new ResponseEntity<>(fetchedStudents, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")

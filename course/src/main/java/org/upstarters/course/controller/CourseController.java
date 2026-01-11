@@ -6,8 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.upstarters.course.dto.CourseDto;
+import org.upstarters.course.dto.ExternalStudentDTO;
 import org.upstarters.course.dto.FullCourseDto;
 import org.upstarters.course.service.CourseService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/courses")
@@ -87,6 +90,16 @@ public class CourseController {
         return courseService.getFullCourseByTitle(title)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @GetMapping("/getAllStudents")
+    public ResponseEntity<List<ExternalStudentDTO>> getAllStudents() {
+        List<ExternalStudentDTO> students = courseService.getStudents();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(students);
     }
 
     //endregion

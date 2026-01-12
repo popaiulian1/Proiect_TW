@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.upstarters.student.dtos.ExternalCourseDTO;
 import org.upstarters.student.dtos.StudentDTO;
-import org.upstarters.student.enums.Major;
 import org.upstarters.student.services.IStudentService;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class StudentController {
     @GetMapping("/getStudents")
     public ResponseEntity<List<StudentDTO>> fetchStudent() {
         List<StudentDTO> fetchedStudents = studentService.fetchStudents();
-        return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
+        return new ResponseEntity<>(fetchedStudents, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
@@ -51,7 +51,7 @@ public class StudentController {
     @GetMapping("/getStudentsByMajor/{major}")
     public ResponseEntity<List<StudentDTO>> fetchStudentByMajor(@Valid @PathVariable String major) {
         List<StudentDTO> fetchedStudents = studentService.fetchStudentsByMajor(major);
-        return new ResponseEntity<>(fetchedStudents, HttpStatus.FOUND);
+        return new ResponseEntity<>(fetchedStudents, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -66,5 +66,29 @@ public class StudentController {
     public ResponseEntity<Boolean> deleteStudent(@Valid @PathVariable String email) {
         boolean deleted = studentService.deleteStudent(email);
         return ResponseEntity.ok(deleted);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/getId/{email}")
+    public ResponseEntity<Long> fetchStudentIdFromEmail(@Valid @PathVariable String email) {
+        Long id = studentService.fetchStudentIdFromEmail(email);
+        return ResponseEntity.ok(id);
+    }
+
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
+    @GetMapping("/recommendations/{email}")
+    public ResponseEntity<List<ExternalCourseDTO>> getRecommendedCourses(@PathVariable String email) {
+        List<ExternalCourseDTO> recommendedCourses = studentService.getRecommendedCourses(email);
+        return new ResponseEntity<>(recommendedCourses, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/update-major-from-course/{email}/{courseTitle}")
+    public ResponseEntity<StudentDTO> updateMajorFromCourse(
+            @PathVariable String email,
+            @PathVariable String courseTitle) {
+
+        StudentDTO updatedStudent = studentService.updateMajorFromCourse(email, courseTitle);
+        return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 }

@@ -1,7 +1,7 @@
 package org.upstarters.student.services;
 
+import org.upstarters.student.dtos.ExternalCourseDTO;
 import org.upstarters.student.dtos.StudentDTO;
-import org.upstarters.student.enums.Major;
 
 import java.util.List;
 
@@ -13,4 +13,8 @@ public interface IStudentService {
     List<StudentDTO> fetchStudents();
     StudentDTO updateStudent(String email, StudentDTO studentDTO);
     boolean deleteStudent(String email);
+    long fetchStudentIdFromEmail(String email);
+
+    List<ExternalCourseDTO> getRecommendedCourses(String email);
+    StudentDTO updateMajorFromCourse(String email, String courseTitle);
 }

@@ -1,19 +1,19 @@
-package org.upstarters.student.dtos;
+package org.upstarters.course.dto;
 
-public class StudentDTO {
+public class ExternalStudentDTO {
     private String firstName;
     private String lastName;
     private String email;
     private String major;
 
-    public StudentDTO(String firstName, String lastName, String email, String major) {
+    public ExternalStudentDTO(String firstName, String lastName, String email, String major) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.major = major;
     }
 
-    public StudentDTO() {
+    public ExternalStudentDTO() {
     }
 
     public String getFirstName() {

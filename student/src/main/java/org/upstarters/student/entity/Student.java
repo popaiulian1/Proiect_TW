@@ -1,7 +1,6 @@
 package org.upstarters.student.entity;
 
 import jakarta.persistence.*;
-import org.upstarters.student.enums.Major;
 
 @Entity
 @Table(name = "students")
@@ -22,7 +21,6 @@ public class Student {
     private String email;
 
     @Column(name = "major")
-    //private Major major;
     private String major;
 
     public Student(String firstname, String lastname, String email, String major) {

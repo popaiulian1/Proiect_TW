@@ -6,7 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.upstarters.course.dto.CourseDto;
+import org.upstarters.course.dto.ExternalStudentDTO;
+import org.upstarters.course.dto.FullCourseDto;
 import org.upstarters.course.service.CourseService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/courses")
@@ -80,6 +84,34 @@ public class CourseController {
                 .body(courseDtos);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @GetMapping("/getByTitle/{title}")
+    public ResponseEntity<FullCourseDto> getCourseById(@PathVariable String title) {
+        return courseService.getFullCourseByTitle(title)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @GetMapping("/getAllStudents")
+    public ResponseEntity<List<ExternalStudentDTO>> getAllStudents() {
+        List<ExternalStudentDTO> students = courseService.getStudents();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(students);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @GetMapping("/getStudentsByDepartment/{department}")
+    public ResponseEntity<List<ExternalStudentDTO>> getStudentsByDepartment(@PathVariable String department) {
+        List<ExternalStudentDTO> students = courseService.getStudentsByDepartment(department);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(students);
+    }
+
     //endregion
 
     //region Update Endpoints
@@ -112,6 +144,25 @@ public class CourseController {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Course not found.");
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @PutMapping("/syncCapacityWithStudents/{title}")
+    public ResponseEntity<String> syncCapacityWithStudents(
+            @PathVariable String title,
+            @RequestParam String department) {
+
+        Boolean isUpdated = courseService.updateCourseCapacityBasedOnStudentCount(title, department);
+
+        if (isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("Course capacity synchronized with student count from " + department);
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Could not perform synchronization. Course not found or student service unavailable.");
         }
     }
 

@@ -1,4 +1,4 @@
-package org.upstarters.student.dtos;
+package org.upstarters.enrollment.dto;
 
 public class StudentDTO {
     private String firstName;

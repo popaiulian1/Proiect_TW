@@ -162,9 +162,9 @@ class EnrollmentControllerTest {
         mockMvc.perform(get("/enrollments/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].student").value("student1@example.com"))  // Changed from studentEmail to student
+                .andExpect(jsonPath("$[0].student").value("student1@example.com"))
                 .andExpect(jsonPath("$[0].course").value("Math 101"))
-                .andExpect(jsonPath("$[1].student").value("student2@example.com"))  // Changed from studentEmail to student
+                .andExpect(jsonPath("$[1].student").value("student2@example.com"))
                 .andExpect(jsonPath("$[1].course").value("Physics 101"));
 
         verify(enrollmentService, times(1)).getAllEnrollments();
@@ -190,7 +190,7 @@ class EnrollmentControllerTest {
 
         mockMvc.perform(get("/enrollments/enrollment/{id}", enrollmentId))
                 .andExpect(status().isFound())
-                .andExpect(jsonPath("$.student").value("student@example.com"))  // Changed from studentEmail to student
+                .andExpect(jsonPath("$.student").value("student@example.com"))
                 .andExpect(jsonPath("$.course").value("Math 101"))
                 .andExpect(jsonPath("$.grade").value(8.5));
 

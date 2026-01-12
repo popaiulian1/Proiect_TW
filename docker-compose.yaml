@@ -111,6 +111,9 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8070/eureka/
       - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ADMIN_KEY=${ADMIN_KEY}
     depends_on:
       - eurekaserver
       - courses

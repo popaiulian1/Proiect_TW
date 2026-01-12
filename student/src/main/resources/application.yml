@@ -6,7 +6,7 @@ spring:
   config:
     import: optional:file:.env[.properties]
   zipkin:
-    base-url: http://localhost:9411 #http://zipkin:9411
+    base-url: http://zipkin:9411
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -31,7 +31,7 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: http://localhost:9411/api/v2/spans #http://zipkin:9411/api/v2/spans
+      endpoint: http://zipkin:9411/api/v2/spans
   endpoints:
     web:
       exposure:

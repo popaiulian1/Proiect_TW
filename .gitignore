@@ -30,3 +30,5 @@ eurekaserver/.env
 gatewayserver/.env
 course/.env
 student/.env
+
+*.env

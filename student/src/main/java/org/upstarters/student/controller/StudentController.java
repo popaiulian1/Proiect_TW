@@ -75,6 +75,13 @@ public class StudentController {
         return ResponseEntity.ok(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/getEmail/{id}")
+    public ResponseEntity<String> fetchStudentEmailFromId(@Valid @PathVariable Long id) {
+        String email = studentService.fetchStudentEmailFromId(id);
+        return ResponseEntity.ok(email);
+    }
+
     @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     @GetMapping("/recommendations/{email}")
     public ResponseEntity<List<ExternalCourseDTO>> getRecommendedCourses(@PathVariable String email) {

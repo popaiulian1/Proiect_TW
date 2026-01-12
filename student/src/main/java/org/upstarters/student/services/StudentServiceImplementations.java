@@ -87,11 +87,19 @@ public class StudentServiceImplementations implements IStudentService {
     }
 
     @Override
-    public long fetchStudentIdFromEmail(String email) {
+    public Long fetchStudentIdFromEmail(String email) {
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Student with this email does not exist!"));
 
         return student.getId();
+    }
+
+    @Override
+    public String fetchStudentEmailFromId(Long id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student with this id does not exist!"));
+
+        return student.getEmail();
     }
 
     @Override

@@ -13,7 +13,8 @@ public interface IStudentService {
     List<StudentDTO> fetchStudents();
     StudentDTO updateStudent(String email, StudentDTO studentDTO);
     boolean deleteStudent(String email);
-    long fetchStudentIdFromEmail(String email);
+    Long fetchStudentIdFromEmail(String email);
+    String fetchStudentEmailFromId(Long id);
 
     List<ExternalCourseDTO> getRecommendedCourses(String email);
     StudentDTO updateMajorFromCourse(String email, String courseTitle);

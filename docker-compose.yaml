@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  university_db:
+    image: postgres:15-alpine
+    container_name: university_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=university_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - university-network
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - university-network
+
+  eurekaserver:
+    build: ./eurekaserver
+    container_name: eurekaserver
+    ports:
+      - "8070:8070"
+    environment:
+      - EUREKA_CLIENT_REGISTERWITHEUREKA=false
+      - EUREKA_CLIENT_FETCHREGISTRY=false
+    networks:
+      - university-network
+
+  courses:
+    build: ./course
+    deploy:
+      replicas: 2
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://university_db:5432/university_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8070/eureka/
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+    depends_on:
+      - university_db
+      - eurekaserver
+      - zipkin
+    networks:
+      - university-network
+
+  students:
+    build: ./student
+    container_name: students
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://university_db:5432/university_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8070/eureka/
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+    depends_on:
+      - university_db
+      - eurekaserver
+    networks:
+      - university-network
+
+  enrollments:
+    build: ./enrollment
+    container_name: enrollments
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://university_db:5432/university_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8070/eureka/
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+    depends_on:
+      - university_db
+      - eurekaserver
+    networks:
+      - university-network
+
+  gatewayserver-secure:
+    build: ./gatewayserver
+    container_name: gatewayserver-secure
+    ports:
+      - "8072:8072"
+    environment:
+      - SPRING_PROFILES_ACTIVE=test
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8070/eureka/
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ADMIN_KEY=${ADMIN_KEY}
+    depends_on:
+      - eurekaserver
+      - courses
+      - students
+      - enrollments
+    networks:
+      - university-network
+
+  gatewayserver-dev:
+    build: ./gatewayserver
+    container_name: gatewayserver-dev
+    ports:
+      - "8073:8072"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8070/eureka/
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+    depends_on:
+      - eurekaserver
+      - courses
+      - students
+      - enrollments
+    networks:
+      - university-network
+
+networks:
+  university-network:
+    driver: bridge

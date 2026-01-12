@@ -11,10 +11,10 @@ import org.upstarters.enrollment.entity.Enrollment;
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     Optional<List<Enrollment>> findEnrollmentsByCourseId(Long courseId);
     Optional<List<Enrollment>> findEnrollmentsByGradeLessThanEqual(double grade);
-    boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
+    boolean existsByStudentEmailAndCourseId(String studentEmail, Long courseId);
     boolean existsByCourseId(Long courseId);
-    boolean existsByStudentId(Long studentId);
+    boolean existsByStudentEmail(String studentEmail);
     Optional<List<Enrollment>> findAllByCourseId(Long courseId);
     Optional<List<Enrollment>> findAllByGradeLessThanEqual(double grade);
-    Optional<List<Enrollment>> findAllByStudentId(Long studentId);
+    Optional<List<Enrollment>> findAllByStudentEmail(String studentEmail);
 }

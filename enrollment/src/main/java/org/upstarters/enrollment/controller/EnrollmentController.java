@@ -41,13 +41,13 @@ public class EnrollmentController {
     @PostMapping("/create")
     public ResponseEntity<String> createEnrollment(@Valid @RequestBody EnrollmentRequestDTO enrollment) {
 
-        if(enrollment.getStudentName() == null || enrollment.getStudentName().isEmpty() ||
-           enrollment.getCourseName() == null || enrollment.getCourseName().isEmpty()) {
-            return new ResponseEntity<>( "Student and course must be provided" ,HttpStatus.BAD_REQUEST);
+        if(enrollment.getStudentEmail() == null || enrollment.getStudentEmail().isEmpty() ||
+        enrollment.getCourseName() == null || enrollment.getCourseName().isEmpty()) {
+            return new ResponseEntity<>("Student and course must be provided", HttpStatus.BAD_REQUEST);
         }
 
         try{
-            enrollmentService.enrollStudentInCourse(enrollment.getStudentName(), enrollment.getCourseName());
+            enrollmentService.enrollStudentInCourse(enrollment.getStudentEmail(), enrollment.getCourseName());
         } catch(Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -155,6 +155,19 @@ public class EnrollmentController {
             return ResponseEntity.ok(studentDetails);
         } catch (Exception e){
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
+    @PutMapping("/student/update-email")
+    public ResponseEntity<String> updateStudentEmailInEnrollments(
+            @RequestParam String oldEmail,
+            @RequestParam String newEmail) {
+        try {
+            EnrollmentDTO response = enrollmentService.updateStudentEmailInEnrollments(oldEmail, newEmail);
+            return ResponseEntity.ok("Student email updated successfully in enrollments.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

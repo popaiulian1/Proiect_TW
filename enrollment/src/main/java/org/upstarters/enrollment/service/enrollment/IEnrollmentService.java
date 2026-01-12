@@ -18,4 +18,5 @@ public interface IEnrollmentService {
     List<EnrollmentDTO> getTop5InCourse(String course);
     List<EnrollmentDTO> getEnrollmentsByStudent(String student);
     StudentDTO getStudentDetailsFromEnrollment(Long enrollmentId);
+    EnrollmentDTO updateStudentEmailInEnrollments(String oldEmail, String newEmail);
 }

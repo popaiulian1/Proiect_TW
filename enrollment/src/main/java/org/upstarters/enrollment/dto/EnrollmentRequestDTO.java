@@ -1,23 +1,23 @@
 package org.upstarters.enrollment.dto;
 
 public class EnrollmentRequestDTO {
-    private String studentName;
+    private String studentEmail;
     private String courseName;
 
     public EnrollmentRequestDTO() {
     }
 
-    public EnrollmentRequestDTO(String studentName, String courseName) {
-        this.studentName = studentName;
+    public EnrollmentRequestDTO(String studentEmail, String courseName) {
+        this.studentEmail = studentEmail;
         this.courseName = courseName;
     }
 
-    public String getStudentName() {
-        return studentName;
+    public String getStudentEmail() {
+        return studentEmail;
     }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
     }
 
     public String getCourseName() {

@@ -1,7 +1,13 @@
 package org.upstarters.enrollment.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity()
 @Table(name = "enrollments")
@@ -12,8 +18,8 @@ public class Enrollment {
     @Column(name = "id", unique = true)
     private Long id;
 
-    @Column(name = "student_id")
-    private Long studentId;
+    @Column(name = "student_email")
+    private String studentEmail;
 
     @Column(name = "course_id")
     private Long courseId;
@@ -25,8 +31,8 @@ public class Enrollment {
     private Double grade;
 
 
-    public Enrollment(Long studentId, Long courseId, LocalDate enrollmentDate, Double grade) {
-        this.studentId = studentId;
+    public Enrollment(String studentEmail, Long courseId, LocalDate enrollmentDate, Double grade) {
+        this.studentEmail = studentEmail;
         this.courseId = courseId;
         this.enrollmentDate = enrollmentDate;
         this.grade = grade;
@@ -44,12 +50,12 @@ public class Enrollment {
         this.id = id;
     }
 
-    public Long getStudentId() {
-        return studentId;
+    public String getStudentEmail() {
+        return studentEmail;
     }
 
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
     }
 
     public Long getCourseId() {

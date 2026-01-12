@@ -1,5 +1,10 @@
 package org.upstarters.enrollment.service.enrollment;
 
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.upstarters.enrollment.dto.EnrollmentDTO;
 import org.upstarters.enrollment.dto.EnrollmentUpdateDTO;
@@ -11,13 +16,6 @@ import org.upstarters.enrollment.service.course.CourseAPIService;
 import org.upstarters.enrollment.service.student.StudentAPIService;
 
 import jakarta.persistence.EntityNotFoundException;
-
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.upstarters.enrollment.entity.Student;
 
 @Service
 public class EnrollmentService implements IEnrollmentService {
@@ -38,24 +36,24 @@ public class EnrollmentService implements IEnrollmentService {
     }
 
     @Override
-    public void enrollStudentInCourse(String studentName, String courseName) {
-        Long studentId = studentAPIService.getStudentIdByName(studentName);
-        Long courseId = courseAPIService.getCourseIdByName(courseName);
-
-        if (studentId == null) {
-            throw new IllegalArgumentException("Student not found with name: " + studentName);
+    public void enrollStudentInCourse(String studentEmail, String courseName) {
+        // Validate student exists
+        StudentDTO student = studentAPIService.getStudentByEmail(studentEmail);
+        if (student == null) {
+            throw new IllegalArgumentException("Student not found with email: " + studentEmail);
         }
+
+        Long courseId = courseAPIService.getCourseIdByName(courseName);
         if (courseId == null) {
             throw new IllegalArgumentException("Course not found with name: " + courseName);
         }
 
-        if (enrollmentRepository.existsByStudentIdAndCourseId(studentId, courseId)) {
+        if (enrollmentRepository.existsByStudentEmailAndCourseId(studentEmail, courseId)) {
             throw new IllegalStateException("Student is already enrolled in the course");
         }
 
         Enrollment enrollment = new Enrollment();
-
-        enrollment.setStudentId(studentId);
+        enrollment.setStudentEmail(studentEmail);
         enrollment.setCourseId(courseId);
         enrollment.setEnrollmentDate(LocalDate.now());
         enrollment.setGrade(0.0);
@@ -148,14 +146,14 @@ public class EnrollmentService implements IEnrollmentService {
     }
 
     @Override
-    public List<EnrollmentDTO> getEnrollmentsByStudent(String student) {
-        Long studentId = studentAPIService.getStudentIdByName(student);
-
-        if (studentId == null) {
-            throw new EntityNotFoundException("Student not found with name: " + student);
+    public List<EnrollmentDTO> getEnrollmentsByStudent(String studentEmail) {
+        // Validate student exists
+        StudentDTO student = studentAPIService.getStudentByEmail(studentEmail);
+        if (student == null) {
+            throw new EntityNotFoundException("Student not found with email: " + studentEmail);
         }
 
-        List<Enrollment> enrollments = enrollmentRepository.findAllByStudentId(studentId)
+        List<Enrollment> enrollments = enrollmentRepository.findAllByStudentEmail(studentEmail)
                 .orElse(List.of());
 
         return enrollments.stream()
@@ -168,14 +166,49 @@ public class EnrollmentService implements IEnrollmentService {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Enrollment not found with id: " + enrollmentId));
 
-        Long studentId = enrollment.getStudentId();
-        String studentName = studentAPIService.getStudentNameById(studentId);
-
-        if (studentName == null) {
-            throw new EntityNotFoundException("Student not found with id: " + studentId);
+        String studentEmail = enrollment.getStudentEmail();
+        StudentDTO studentDetails = studentAPIService.getStudentByEmail(studentEmail);
+        
+        if (studentDetails == null) {
+            throw new EntityNotFoundException("Student not found with email: " + studentEmail);
         }
 
-        StudentDTO studentDetails = studentAPIService.getStudentByEmail(studentName);
         return studentDetails;
+    }
+
+    @Override
+    public EnrollmentDTO updateStudentEmailInEnrollments(String oldEmail, String newEmail) {
+
+        StudentDTO student = studentAPIService.getStudentByEmail(oldEmail);
+
+        if (student == null) {
+            throw new EntityNotFoundException("Student not found with email: " + oldEmail);
+        }
+        
+        student.setEmail(newEmail);
+
+        StudentDTO response = studentAPIService.updateStudentInfo(oldEmail, student);
+
+        if (response == null) {
+            throw new RuntimeException("Failed to update student email in student service from " + oldEmail + " to " + newEmail);
+        } else {
+            List<Enrollment> enrollments = enrollmentRepository.findAllByStudentEmail(oldEmail)
+                .orElse(List.of());
+
+            if (enrollments.isEmpty()) {
+                throw new EntityNotFoundException("No enrollments found for student with email: " + oldEmail);
+            }
+
+            for (Enrollment enrollment : enrollments) {
+                enrollment.setStudentEmail(newEmail);
+            }
+
+            enrollmentRepository.saveAll(enrollments);
+
+            return enrollments.stream()
+                .findFirst()
+                .map(enrollmentMapper::toDto)
+                .orElse(null);
+        }
     }
 }

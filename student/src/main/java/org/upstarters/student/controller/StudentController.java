@@ -1,16 +1,24 @@
 package org.upstarters.student.controller;
 
-import jakarta.validation.Valid;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.upstarters.student.dtos.ExternalCourseDTO;
 import org.upstarters.student.dtos.StudentDTO;
 import org.upstarters.student.services.IStudentService;
 
-import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/students")
@@ -26,11 +34,11 @@ public class StudentController {
         return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     @GetMapping("/getByEmail/{email}")
     public ResponseEntity<StudentDTO> fetchStudent(@Valid @PathVariable String email) {
         StudentDTO fetchedStudent = studentService.fetchStudent(email);
-        return new ResponseEntity<>(fetchedStudent, HttpStatus.FOUND);
+        return new ResponseEntity<>(fetchedStudent, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

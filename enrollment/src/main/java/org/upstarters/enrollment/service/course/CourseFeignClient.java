@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.upstarters.enrollment.dto.CourseDTO;
 import org.upstarters.enrollment.dto.FullCourseDTO;
 
-@FeignClient(name = "course-service", path = "/courses")
+@FeignClient(name = "courses", path = "/courses")
 public interface CourseFeignClient {
     @GetMapping("/getCourseById/{courseId}")
     CourseDTO getCourseById(@PathVariable("courseId") Long courseId);
     
-    @GetMapping("/getCourseByTitle/{title}")
+    @GetMapping("/getByTitle/{title}")
     FullCourseDTO getCourseByTitle(@PathVariable("title") String title);
 }

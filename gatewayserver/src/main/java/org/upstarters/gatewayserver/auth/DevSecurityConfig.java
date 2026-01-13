@@ -12,7 +12,9 @@ public class DevSecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
-        http.authorizeExchange(exchange -> exchange.anyExchange().permitAll());
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeExchange(exchange -> exchange.anyExchange().permitAll());
         return http.build();
     }
 }

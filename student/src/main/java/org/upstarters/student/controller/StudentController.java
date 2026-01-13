@@ -1,8 +1,12 @@
 package org.upstarters.student.controller;
 
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,13 +23,18 @@ import org.upstarters.student.dtos.StudentDTO;
 import org.upstarters.student.services.IStudentService;
 
 import jakarta.validation.Valid;
+import org.yaml.snakeyaml.Yaml;
 
 @RestController
+@RefreshScope
 @RequestMapping(path = "/students")
 public class StudentController {
 
     @Autowired
     private IStudentService studentService;
+
+    @Value("${student.test-message:Valoare Default}")
+    private String testMessage;
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/create")
@@ -105,5 +114,10 @@ public class StudentController {
 
         StudentDTO updatedStudent = studentService.updateMajorFromCourse(email, courseTitle);
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
+    }
+
+    @GetMapping("/message")
+    public ResponseEntity<String> getMessageFromProperties() {
+        return ResponseEntity.ok(testMessage);
     }
 }

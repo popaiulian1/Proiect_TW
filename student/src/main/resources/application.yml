@@ -35,12 +35,15 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,env,loggers,shutdown
+        include: health,info,metrics,env,loggers,shutdown,refresh
   endpoint:
     health:
       show-details: always
     shutdown:
       access: unrestricted
+
+student:
+  test-message: "Mesajasbdsah"
 
 logging:
   level:
